@@ -21,3 +21,6 @@ Homestead.json
 .phpunit.result.cache
 npm-debug.log
 yarn-error.log
+
+.DS_Store
+*.sql

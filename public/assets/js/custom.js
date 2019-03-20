@@ -131,7 +131,7 @@ $(document).ready(function(){
 	//Show Product Image Mouse Over Start
 		$(document).on('mouseover', '.featured_image', function(){
 			console.log($('#featured_image_'+$(this).attr('data-id')).val());
-			$('.show_featured_image').append('<img src="'+$('#featured_image_'+$(this).attr('data-id')).val()+'" style="width: 200px;height: 150px;">');
+			$('.show_featured_image').append('<img src="/'+$('#featured_image_'+$(this).attr('data-id')).val()+'" style="width: 200px;height: 150px;">');
 		});
 	//Show Product Image Mouse Over End
 
