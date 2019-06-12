@@ -62,40 +62,37 @@
                                             <td>{{ $row->order_no }}</td>
                                             <td>
                                                 <span>
-                                                    @if($row->stars == 1)
+                                                    @if($row->buyer_stars == 1)
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                    @elseif($row->stars == 2)
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                    @elseif($row->stars == 3)
+                                                    @elseif($row->buyer_stars == 2)
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                    @elseif($row->stars == 4)
+                                                    @elseif($row->buyer_stars == 3)
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
+                                                    @elseif($row->buyer_stars == 4)
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                    @elseif($row->stars == 5)
+                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
+                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
+                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
+                                                    @elseif($row->buyer_stars == 5)
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                     @else
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
+                                                        0 Stars
                                                     @endif
                                                 </span><br>
-                                                <span>{{ $row->first_name }} {{ $row->last_name }} - {{ date('D-M-Y', strtotime($row->created_date)) }}</span><br>
+                                                <span>{{ $row->first_name }} {{ $row->last_name }} - {{ date('D-M-Y g:i:s A', strtotime($row->buyer_review_created_date.' '.$row->buyer_review_created_time)) }}</span><br>
                                                 <span>{{ $row->buyer_comment }}</span>
                                             </td>
                                             <td>
                                                 @if($row->vendor_comment != '')
-                                                    {{ $row->vendor_comment }}
+                                                    <span>{{ date('D-M-Y g:i:s A', strtotime($row->vendor_review_created_date.' '.$row->vendor_review_created_time)) }}</span><br>
+                                                <span>{{ $row->vendor_comment }}</span>
                                                 @else
                                                     <a href="javascript::void(0);" class="dropdown-item" data-toggle="modal" data-target="#reply_{{ $row->order_no }}">Reply</a>
                                                 @endif

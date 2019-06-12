@@ -16,12 +16,12 @@ class ProductsController extends Controller{
             );
 
             //Query for Getting Data
-            $query = DB::table('tbl_products_rating')
-                         ->select('tbl_products_rating.id', 'tbl_products_rating.stars', 'tbl_products_rating.buyer_comment', 'tbl_products_rating.vendor_comment', 'tbl_products_rating.created_date', 'tbl_products_rating.created_time', 'tbl_products.name', 'tbl_products.id as p_id', 'tbl_users.first_name', 'tbl_users.last_name')
-                         ->leftJoin('tbl_products', 'tbl_products.id', '=', 'tbl_products_rating.product_id')
-                         ->leftJoin('tbl_users', 'tbl_users.id', '=', 'tbl_products_rating.buyer_id')
+            $query = DB::table('tbl_products_reviews')
+                         ->select('tbl_products_reviews.id', 'buyer_stars', 'buyer_comment', 'vendor_stars', 'vendor_comment', 'buyer_review_created_date', 'buyer_review_created_time', 'vendor_review_created_date', 'vendor_review_created_time', 'tbl_products.id as p_id', 'name as product_name', 'first_name', 'last_name')
+                         ->leftJoin('tbl_products', 'tbl_products.id', '=', 'tbl_products_reviews.product_id')
+                         ->leftJoin('tbl_users', 'tbl_users.id', '=', 'tbl_products_reviews.buyer_id')
                          ->where('tbl_products.user_id', $request->session()->get('user_details')['id'])
-                         ->orderBy('tbl_products_rating.id', 'DESC');
+                         ->orderBy('tbl_products_reviews.id', 'DESC');
             $result['query'] = $query->paginate(10);
             $result['total_records'] = $result['query']->count();
             
@@ -46,7 +46,7 @@ class ProductsController extends Controller{
             );
 
             //Query For Updating Data
-            $query = DB::table('tbl_products_rating')
+            $query = DB::table('tbl_products_reviews')
                          ->where('id', $id)
                          ->update($data);
 
@@ -75,36 +75,36 @@ class ProductsController extends Controller{
             );
             
             //Query for Getting Data
-            $query = DB::table('tbl_products_rating')
-                         ->select('tbl_products_rating.id', 'tbl_products_rating.stars', 'tbl_products_rating.buyer_comment', 'tbl_products_rating.vendor_comment', 'tbl_products_rating.created_date', 'tbl_products_rating.created_time', 'tbl_products.name', 'tbl_products.id as p_id', 'tbl_users.first_name', 'tbl_users.last_name')
-                         ->leftJoin('tbl_products', 'tbl_products.id', '=', 'tbl_products_rating.product_id')
-                         ->leftJoin('tbl_users', 'tbl_users.id', '=', 'tbl_products_rating.buyer_id');
+            $query = DB::table('tbl_products_reviews')
+                         ->select('tbl_products_reviews.id', 'buyer_stars', 'buyer_comment', 'vendor_stars', 'vendor_comment', 'buyer_review_created_date', 'buyer_review_created_time', 'vendor_review_created_date', 'vendor_review_created_time', 'tbl_products.id as p_id', 'name as product_name', 'first_name', 'last_name')
+                         ->leftJoin('tbl_products', 'tbl_products.id', '=', 'tbl_products_reviews.product_id')
+                         ->leftJoin('tbl_users', 'tbl_users.id', '=', 'tbl_products_reviews.buyer_id')
+                         ->where('tbl_products.user_id', $request->session()->get('user_details')['id']);
                          if(!empty($request->input('name'))){
                    $query->where('tbl_products.name', 'LIKE', '%'.$request->input('name').'%');
                          }
                          if(!empty($request->input('rating') == 0)){
-                   $query->where('tbl_products_rating.stars', '!=', NULL)
-                         ->where('tbl_products_rating.buyer_comment', NULL);
+                   $query->where('tbl_products_reviews.buyer_stars', '!=', NULL)
+                         ->where('tbl_products_reviews.buyer_comment', NULL);
                          }elseif(!empty($request->input('rating') == 1)){
-                   $query->where('tbl_products_rating.stars', NULL)
-                         ->where('tbl_products_rating.buyer_comment', '!=', NULL);
+                   $query->where('tbl_products_reviews.buyer_stars', NULL)
+                         ->where('tbl_products_reviews.buyer_comment', '!=', NULL);
                          }elseif(!empty($request->input('rating') == 2)){
-                   $query->where('tbl_products_rating.stars', '!=', NULL)
-                         ->where('tbl_products_rating.buyer_comment', '!=', NULL);
+                   $query->where('tbl_products_reviews.buyer_stars', '!=', NULL)
+                         ->where('tbl_products_reviews.buyer_comment', '!=', NULL);
                          }
                          if(!empty($request->input('reply') == 0)){
-                   $query->where('tbl_products_rating.vendor_comment', '!=', NULL);
+                   $query->where('tbl_products_reviews.vendor_comment', '!=', NULL);
                          }elseif(!empty($request->input('reply') == 1)){
-                   $query->where('tbl_products_rating.vendor_comment', NULL);
+                   $query->where('tbl_products_reviews.vendor_comment', NULL);
                          }
                          if(!empty($request->input('from'))){
-                   $query->where('tbl_products_rating.created_date', date('Y-m-d', strtotime($request->input('from'))));
+                   $query->where('tbl_products_reviews.created_date', date('Y-m-d', strtotime($request->input('from'))));
                          }
                          if(!empty($request->input('to'))){
-                   $query->where('tbl_products_rating.created_date', date('Y-m-d', strtotime($request->input('to'))));
+                   $query->where('tbl_products_reviews.created_date', date('Y-m-d', strtotime($request->input('to'))));
                          }
-                   $query->where('tbl_products.user_id', $request->session()->get('user_details')['id'])
-                         ->orderBy('tbl_products_rating.id', 'DESC');
+                   $query->orderBy('tbl_products_reviews.id', 'DESC');
             $result['query'] = $query->paginate(10);
             $result['total_records'] = $result['query']->count();
 

@@ -136,9 +136,7 @@
                                 <div class="form-group">
                                     <label class="label-control">Image Preview</label><br>
                                     @if(!empty($query->logo))
-                                        <img src="{{ env('ADMIN_URL').'public/assets/admin/images/settings/logo/'.$query->logo }}" class="single_image_preview_1" alt="Store Logo" style="width:150px; height:150px"/>
-                                    @else
-                                        <img class="single_image_preview_1" alt="Store Logo" style="width:150px; height:150px"/>
+                                        <img src="{{ env('ADMIN_URL').'public/assets/admin/images/stores_logo/'.$query->logo }}" class="single_image_preview_1" alt="Store Logo" style="width:150px; height:150px"/>
                                     @endif
                                 </div>
                             </div>
@@ -154,9 +152,7 @@
                                 <div class="form-group">
                                     <label class="label-control">Image Preview</label><br>
                                     @if(!empty($query->banner))
-                                        <img src="{{ env('ADMIN_URL').'public/assets/admin/images/advertisements/banners/'.$query->banner }}" class="single_image_preview_2" alt="Store Logo" style="width:150px; height:150px"/>
-                                    @else
-                                        <img class="single_image_preview_2" alt="Store Logo" style="width:150px; height:150px"/>
+                                        <img src="{{ env('ADMIN_URL').'public/assets/admin/images/stores_banners/'.$query->banner }}" class="single_image_preview_2" alt="Store Logo" style="width:150px; height:150px"/>
                                     @endif
                                 </div>
                             </div>
@@ -172,9 +168,7 @@
                                 <div class="form-group">
                                     <label class="label-control">Image Preview</label><br>
                                     @if(!empty($query->cheque))
-                                        <img src="{{ asset('public/assets/images/settings/'.$query->cheque }}" class="single_image_preview_3" alt="Store Logo" style="width:150px; height:150px"/>
-                                    @else
-                                        <img class="single_image_preview_3" alt="Store Logo" style="width:150px; height:150px"/>
+                                        <img src="{{ env('ADMIN_URL').'public/assets/admin/images/cheque_images/'.$query->cheque }}" class="single_image_preview_3" alt="Store Logo" style="width:150px; height:150px"/>
                                     @endif
                                 </div>
                             </div>

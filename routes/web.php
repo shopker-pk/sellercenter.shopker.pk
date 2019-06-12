@@ -37,7 +37,7 @@
 			Route::post('/vendor/orders/update/order-status/{order_no}', 'Orders\OrdersController@update_order_status')->name('update_order_status');
 			Route::post('/vendor/orders/update/payment-status/{order_no}', 'Orders\OrdersController@update_payment_status')->name('update_payment_status');
 			Route::get('/vendor/orders/details/{order_no}', 'Orders\OrdersController@details')->name('order_details');
-			Route::post('/vendor/orders/search', 'Orders\OrdersController@search')->name('search_orders');
+			Route::get('/vendor/orders/search', 'Orders\OrdersController@search')->name('search_orders');
 		//Order Routes End
 
 		//Invoice Routes Start

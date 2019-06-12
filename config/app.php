@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/karachi',
 
     /*
     |--------------------------------------------------------------------------
@@ -134,6 +134,9 @@ return [
     |
     */
 
+    //Custom Global Variables
+    'admin_url' => $_SERVER['DOCUMENT_ROOT'].'/shopker_admin/public/assets/admin/',
+
     'providers' => [
 
         /*
@@ -168,6 +171,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         //Excel
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        //Custom helper Provider
+        App\Providers\CustomHelpersServiceProvider::class,
     ],
 
     /*

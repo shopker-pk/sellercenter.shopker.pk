@@ -16,22 +16,16 @@
                 <div class="box box-default">
                     <div class="box-body">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label>First Name</label><label class="label-control" style="color:red">*</label>
                                     <input type="text" name="first_name" id="first_name" class="form-control" placeholder="First Name*" value="{{ old('first_name', $query->first_name) }}">
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Last Name</label><label class="label-control" style="color:red">*</label>
                                     <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Last Name*" value="{{ old('last_name', $query->last_name) }}">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>CNIC</label><label class="label-control" style="color:red">*</label>
-                                    <input type="text" name="cnic" id="cnic" class="form-control" placeholder="CNIC*" value="{{ old('cnic', $query->cnic) }}" readonly>
                                 </div>
                             </div>
                         </div>

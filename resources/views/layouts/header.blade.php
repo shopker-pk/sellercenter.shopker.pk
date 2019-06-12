@@ -34,7 +34,7 @@
                                         <li>
                                             <a href="#">
                                                 <div class="pull-left">
-                                                    <img src="{{ asset('public/assets/dist/img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
+                                                    <img src="{{ env('ADMIN_URL').'public/assets/admin/images/profile_images/'.Session::get('user_details')['image'] }}" class="img-circle" alt="User Image">
                                                 </div>
                                                 <h4>
                                                     Support Team
@@ -69,12 +69,12 @@
                         </li>
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="{{ asset('public/assets/images/profile_images/'.Session::get('user_details')['image']) }}" class="user-image" alt="Profile Image">
+                                <img src="{{ env('ADMIN_URL').'public/assets/admin/images/profile_images/'.Session::get('user_details')['image'] }}" class="user-image" alt="Profile Image">
                                 <span class="hidden-xs">{{ Session::get('user_details')['name'] }}</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="user-header">
-                                    <img src="{{ asset('public/assets/images/profile_images/'.Session::get('user_details')['image']) }}" class="img-circle" alt="Profile Image">
+                                    <img src="{{ env('ADMIN_URL').'public/assets/admin/images/profile_images/'.Session::get('user_details')['image'] }}" class="img-circle" alt="Profile Image">
                                     <p>{{ Session::get('user_details')['name'] }}</p>
                                 </li>
                                 <li class="user-footer">

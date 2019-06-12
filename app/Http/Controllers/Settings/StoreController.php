@@ -17,7 +17,7 @@ class StoreController extends Controller{
 
             //Query For getting profile data
             $query = DB::table('tbl_users')
-                         ->select('tbl_users.cnic', 'tbl_store_settings.bussiness_name', 'tbl_store_settings.store_name', 'tbl_store_settings.store_email', 'tbl_store_settings.store_phone_no', 'tbl_store_settings.store_cell_no', 'tbl_store_settings.store_address', 'tbl_store_settings.warehouse_address', 'tbl_store_settings.cnic', 'tbl_store_settings.ntn_no', 'tbl_countries.country_code', 'tbl_countries.country_name', 'tbl_cities.id as city_id', 'tbl_cities.name as city_name', 'tbl_stores_bank_details.name as bank_name', 'tbl_stores_bank_details.title as bank_title', 'tbl_stores_bank_details.account_no', 'tbl_stores_bank_details.branch_code', 'tbl_store_images.logo', 'tbl_store_images.banner', 'tbl_store_images.cheque')
+                         ->select('tbl_store_settings.cnic', 'tbl_store_settings.bussiness_name', 'tbl_store_settings.store_name', 'tbl_store_settings.store_email', 'tbl_store_settings.store_phone_no', 'tbl_store_settings.store_cell_no', 'tbl_store_settings.store_address', 'tbl_store_settings.warehouse_address', 'tbl_store_settings.cnic', 'tbl_store_settings.ntn_no', 'tbl_countries.country_code', 'tbl_countries.country_name', 'tbl_cities.id as city_id', 'tbl_cities.name as city_name', 'tbl_stores_bank_details.name as bank_name', 'tbl_stores_bank_details.title as bank_title', 'tbl_stores_bank_details.account_no', 'tbl_stores_bank_details.branch_code', 'tbl_store_images.logo', 'tbl_store_images.banner', 'tbl_store_images.cheque')
                          ->LeftJoin('tbl_store_settings', 'tbl_store_settings.vendor_id', '=', 'tbl_users.id')
                          ->LeftJoin('tbl_countries', 'tbl_countries.country_code', '=', 'tbl_users.country_id')
                          ->LeftJoin('tbl_cities', 'tbl_cities.id', '=', 'tbl_users.city_id')
@@ -63,11 +63,11 @@ class StoreController extends Controller{
 	        if(!empty($request->file('logo_image') && $request->file('banner_image'))){
 	        	//File Upload
         		$logo_image = uniqid().'.'.$request->file('logo_image')->guessExtension();
-                $image_path = $request->file('logo_image')->move(env('ADMIN_URL').'public/assets/admin/images/settings/logo/', $logo_image);
+                $image_path = $request->file('logo_image')->move($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/stores_logo/', $logo_image);
 
                 //File Upload
         		$banner_image = uniqid().'.'.$request->file('banner_image')->guessExtension();
-                $image_path = $request->file('banner_image')->move(env('ADMIN_URL').'public/assets/admin/images/advertisements/banners/', $banner_image);
+                $image_path = $request->file('banner_image')->move($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/stores_banners/', $banner_image);
 
                 //Set Field data according to table column
 		        $store_settings = array(
@@ -122,7 +122,7 @@ class StoreController extends Controller{
         	}elseif(!empty($request->file('banner_image'))){
         		//File Upload
         		$banner_image = uniqid().'.'.$request->file('banner_image')->guessExtension();
-                /*$image_path = $request->file('banner_image')->move(env('ADMIN_URL').'public/assets/admin/images/advertisements/banners/', $banner_image);*/
+                $image_path = $request->file('banner_image')->move($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/stores_banners/', $banner_image);
 
                 //Set Field data according to table column
 		        $store_settings = array(
@@ -175,8 +175,8 @@ class StoreController extends Controller{
 		    	             ->update($store_bank_details);
         	}elseif(!empty($request->file('logo_image'))){
         		//File Upload
-        		$  = uniqid().'.'.$request->file('logo_image')->guessExtension();
-                /*$image_path = $request->file('logo_image')->move(env('ADMIN_URL').'public/assets/admin/images/settings/logo/', $logo_image);*/
+        		$logo_image  = uniqid().'.'.$request->file('logo_image')->guessExtension();
+                $image_path = $request->file('logo_image')->move($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/stores_logo/', $logo_image);
 
                 //Set Field data according to table column
 		        $store_settings = array(
@@ -233,6 +233,7 @@ class StoreController extends Controller{
 		        	'ip_address' => $request->ip(),
 		        	'bussiness_name' => $request->input('bussiness_name'),
 		            'store_name' => $request->input('store_name'),
+		            'store_slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->input('store_name')))),
 		        	'store_email' => $request->input('store_email'),
 		        	'store_phone_no' => $request->input('store_phone_no'),
 		        	'store_cell_no' => $request->input('store_cell_no'),

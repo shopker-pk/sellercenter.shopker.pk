@@ -14,7 +14,7 @@
             <div class="box box-default">
                 <div class="box-body">
                     <div class="box-header">
-                        <form action="{{ route('search_orders') }}" method="post">
+                        <form action="{{ route('search_orders') }}" method="get">
                             {{ csrf_field() }}
                             <div class="row">
                                 <div class="col-md-2">
@@ -61,15 +61,15 @@
                                     <th>Invoice</th>
                                     <th>Order NO#</th>
                                     <th>Payment Type</th>
-                                    <th>Payment Status</th>
-                                    <th>Order Date</th>
                                     <th>Order Amount</th>
+                                    <th>Payment Status</th>
                                     <th>Order Status</th>
+                                    <th>Order Date</th>
                                     <th>Action</th>
                                 </tr>
-                                <tr>
-                                    @if(!empty($query))
+                                 @if(!empty($query))
                                         @foreach($query as $row)
+                                        <tr>
                                             <td><a href="{{ route('invoice_details', $row->order_no) }}" target="__parent">Invoice</a></td>
                                             <td>{{ $row->order_no }}</td>
                                             <td>
@@ -81,6 +81,7 @@
                                                     Cash On Delivery
                                                 @endif
                                             </td>
+                                            <td>{{ $row->total }}</td>
                                             <td>
                                                 @if($row->p_status == 0)
                                                     <span class="label label-success">Paid</span>
@@ -88,8 +89,6 @@
                                                     <span class="label label-danger">Unpaid</span>
                                                 @endif
                                             </td>
-                                            <td>{{ date('D-M-Y', strtotime($row->order_date)) }}</td>
-                                            <td>{{ $row->total }}</td>
                                             <td>
                                                 @if($row->o_status == 0)
                                                     <span class="label label-warning">Pending</span>
@@ -105,22 +104,22 @@
                                                     <span class="label label-danger">Canceled</span>
                                                 @endif
                                             </td>
+                                            <td>{{ date('D-M-Y', strtotime($row->order_date)) }}</td>
                                             <td>
                                                 <div class="input-group-btn">
                                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action
                                                     <span class="fa fa-caret-down"></span></button>
                                                     <ul class="dropdown-menu">
                                                         <li><a href="javascript::void(0);" class="dropdown-item" data-toggle="modal" data-target="#order_{{ $row->order_no }}">Edit Order Status</a></li>
-                                                        <li><a href="javascript::void(0);" class="dropdown-item" data-toggle="modal" data-target="#payment_{{ $row->order_no }}">Edit Payment Status</a></li>
                                                         <li><a href="{{ route('order_details',  $row->order_no) }}">View Order Details</a></li>
                                                     </ul>
                                                 </div>
                                             </td>
-                                        @endforeach
-                                    @else
-                                        No records found !!
-                                    @endif
-                                </tr>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    No records found !!
+                                @endif
                             </tbody>
                         </table>
                         <!-- Edit Order Status Modal -->
@@ -141,46 +140,11 @@
                                                     <label class="label-control">Order Status</label>
                                                     <br>
                                                     <select id="order_status" name="order_status" class="form-control select_2" style="width: 100%">
-                                                        <option value="0" @if($row->o_status == 0) selected @endif>Pending</option>
                                                         <option value="1" @if($row->o_status == 1) selected @endif>In Process</option>
                                                         <option value="2" @if($row->o_status == 2) selected @endif>Ready to Ship</option>
                                                         <option value="3" @if($row->o_status == 3) selected @endif>Shiped</option>
                                                         <option value="4" @if($row->o_status == 4) selected @endif>Delivered</option>
                                                         <option value="5" @if($row->o_status == 5) selected @endif>Canceled</option>
-                                                    </select>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-primary">
-                                                        <i class="fa fa-check-square-o"></i> Update
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach 
-                        @endif
-
-                        <!-- Edit Payment Status Modal -->
-                        @if(!empty($query)) 
-                            @foreach($query as $row)
-                                <div class="modal fade text-left" id="payment_{{ $row->order_no }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" style="display: none;" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <label class="modal-title text-text-bold-600" id="myModalLabel33">Order NO# : {{ $row->order_no }}</label>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">×</span>
-                                                </button>
-                                            </div>
-                                            <form action="{{ route('update_payment_status', $row->order_no) }}" method="post">
-                                                {{ csrf_field() }}
-                                                <div class="modal-body">
-                                                    <label class="label-control">Payment Status</label>
-                                                    <br>
-                                                    <select id="payment_status" name="payment_status" class="form-control select_2" style="width: 100%">
-                                                        <option value="0" @if($row->p_status == 0) selected @endif>Paid</option>
-                                                        <option value="1" @if($row->p_status == 1) selected @endif>UnPaid</option>
                                                     </select>
                                                 </div>
                                                 <div class="modal-footer">

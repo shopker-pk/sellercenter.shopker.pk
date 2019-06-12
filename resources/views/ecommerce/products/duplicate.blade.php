@@ -149,6 +149,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Product Video Url</label>
+                                    <input type="text" name="video_url" id="video_url" class="form-control" placeholder="Product Video Url" value="{{ old('video_url', $query_product->video_url) }}">
+                                </div>
+                            </div>
+                        </div>
                         <div>
                             <div id="variations">
                                 <div class="row main" data-id="{{ $query_product->id }}">
@@ -171,7 +179,7 @@
                                             <option value="{{ $row->id }}" @if($query_product->variation_id == $row->id) selected @endif>{{ $row->value }}</option>
                                             @endforeach
                                         </select>
-                                        <a href="javascript::void(0);" id="remove_variation" style="color: red"><i class="fa fa-minus"> Remove</i></a><br><p style="color: red;padding: 1%;margin-top: 2%;margin-bottom: 2%;padding-left: 0%;">Drag and drop pictures below to upload.Multiple images can be uploaded at once.Maximum 6 pictures, size between 650*850 px.</p>
+                                        <p style="color: red;padding: 1%;margin-top: 2%;margin-bottom: 2%;padding-left: 0%;">Drag and drop pictures below to upload.Multiple images can be uploaded at once.Maximum 6 pictures, size between 650*850 px.</p>
                                     </div>
                                     <div class="col-md-12" style="margin-left: 1%; border: 1px solid lightgray; padding: 15px;max-width: 98%;">
                                         <div class="image-upload-wrap">

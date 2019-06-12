@@ -143,6 +143,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Product Video Url</label>
+                                    <input type="text" name="video_url" id="video_url" class="form-control" placeholder="Product Video Url" value="{{ old('video_url') }}">
+                                </div>
+                            </div>
+                        </div>
                         <div>
                             <div class="row">
                                 <div class="col-md-6">

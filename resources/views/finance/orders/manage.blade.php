@@ -45,28 +45,51 @@
                                     <th>Order NO#</th>
                                     <th>Order Date</th>
                                     <th>Product SKU</th>
-                                    <th>Unit Price</th>
                                     <th>Sale Price</th>
                                     <th>Commission</th>
-                                    <th>VAT</th>
                                     <th>Payout Amount</th>
                                     <th>Operational Status</th>
                                     <th>Payout Status</th>
                                 </tr>
+                                @if(!empty($query))
+                                    @foreach($query as $row)
                                 <tr>
-                                    <td>00001</td>
-                                    <td>16-10-2018</td>
-                                    <td>Product 1 Product SKU 1</td>
-                                    <td>1599</td>
-                                    <td>1499</td>
-                                    <td>-49</td>
-                                    <td>-50</td>
-                                    <td>1400</td>
-                                    <td><span class="label label-success">Delivered</span></td>
-                                    <td><span class="label label-warning">Pending</span></td>
+                                    <td>{{ $row->order_no }}</td>
+                                    <td>{{ date('D-M-Y', strtotime($row->order_date)) }}</td>
+                                    <td>{{ $row->sku_code }}</td>
+                                    <td>{{ $row->product_amount }}</td>
+                                    <td>{{ round(($row->commission_percent / 100) * $row->product_amount) }}</td>
+                                    <td>{{ round(($row->product_amount) - ($row->commission_percent / 100) * $row->product_amount) }}</td>
+                                    <td>
+                                        @if($row->operational_status == 0)
+                                            <span class="label label-warning">Pending</span>
+                                        @elseif($row->operational_status == 1)
+                                            <span class="label label-info">In Process</span>
+                                        @elseif($row->operational_status == 2)
+                                            <span class="label label-info">Ready To Ship</span>
+                                        @elseif($row->operational_status == 3)
+                                            <span class="label label-info">Shipped</span>
+                                        @elseif($row->operational_status == 4)
+                                            <span class="label label-success">Delivered</span>
+                                        @elseif($row->operational_status == 5)
+                                            <span class="label label-danger">Canceled</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($row->payout_status == 0)
+                                            <span class="label label-success">Paid</span>
+                                        @else
+                                            <span class="label label-danger">Unpaid</span>
+                                        @endif
+                                    </td>
                                 </tr>
+                                    @endforeach
+                                @else
+                                    No Records Found !!
+                                @endif
                             </tbody>
                         </table>
+                        {{ $query->links() }}
                     </div>
             	</div>
         	</div>

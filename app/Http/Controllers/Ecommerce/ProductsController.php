@@ -17,7 +17,7 @@ class ProductsController extends Controller{
 
             //Query For Getting Products
             $query = DB::table('tbl_products')
-                         ->select('tbl_products.id', 'tbl_products_featured_images.featured_image', 'name', 'sku_code', 'created_date', 'regural_price', 'sale_price', 'quantity', 'status', 'is_approved', 'from_date', 'to_date')
+                         ->select('tbl_products.id', 'tbl_products_featured_images.featured_image', 'name', 'slug', 'sku_code', 'created_date', 'regural_price', 'sale_price', 'quantity', 'status', 'is_approved', 'from_date', 'to_date')
                          ->leftJoin('tbl_products_featured_images', 'tbl_products_featured_images.product_id', '=', 'tbl_products.id')
                          ->where('tbl_products.user_id', $request->session()->get('user_details')['id'])
                          ->orderBy('tbl_products.id', 'DESC');
@@ -294,18 +294,13 @@ $html .=    '<div class="row main" data-id="'.$id.'">
 
     function insert(Request $request){
         if(!empty($request->session()->get('user_details')['id'] && $request->session()->get('user_details')['role'] == 2)){
-            //Get All Inputs
-            $images = $request->input('images');
-            $images_url = $request->input('url');
-            $variation = $request->input('variation');
-            
             //Inputs Validation
             $input_validations = $request->validate([
                 'name' => 'required',
-                'parent_category' => 'required',
-                'child_category' => 'required',
-                'sub_child_category' => 'required',
-                'brand' => 'required',
+                'parent_category' => 'required|numeric',
+                'child_category' => 'required|numeric',
+                'sub_child_category' => 'required|numeric',
+                'brand' => 'required|numeric',
                 'high_light' => 'required',
                 'description' => 'required',
                 'warranty_type' => 'required',
@@ -322,15 +317,22 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'sale_price.*' => 'nullable|numeric',
                 'from.*' => 'nullable',
                 'to.*' => 'nullable',
+                'video_url' => 'nullable',
                 'meta_keywords' => 'nullable',
                 'meta_description' => 'nullable',
                 'images.*' => 'required',
                 'url.*' => 'required',
             ]);
 
-            if(!empty($variation)){
+            if(!empty($request->input('variation'))){
+                //Query For Getting Vendor Id
+                $query = DB::table('tbl_store_settings')
+                             ->select('store_name')
+                             ->where('vendor_id', $request->session()->get('user_details')['id']);
+                $vendor_details = $query->first();
+
                 $count = 0;
-                foreach($variation as $row){
+                foreach($request->input('variation') as $row){
                     if($request->input('sale_price')[$count] >= $request->input('price')[$count]){
                         //Flash Error Msg
                         $request->session()->flash('alert-danger', 'Special price must be less than the price.');
@@ -351,7 +353,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                             'ip_address' => $request->ip(),
                             'user_id' => $request->session()->get('user_details')['id'],
                             'name' => $request->input('name'),
-                            'slug' => strtolower(str_replace(' ', '-', $request->input('name'))),
+                            'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->input('name').'-'.$vendor_details->store_name))),
                             'high_light' => $request->input('high_light'),
                             'description' => $request->input('description'),
                             'warranty_type' => $request->input('warranty_type'),
@@ -371,6 +373,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                             'is_approved' => 1,
                             'meta_keywords' => $request->input('meta_keywords'),
                             'meta_description' => $request->input('meta_description'),
+                            'video_url' => $request->input('video_url'),
                             'created_date' => date('Y-m-d'),
                             'created_time' => date('h:i:s'),
                         );
@@ -380,11 +383,11 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                                           ->insertGetId($data);    
                         $count++;
 
-                        foreach($images_url[$row] as $url){
+                        foreach($request->input('url')[$row] as $url){
                             //Upload Product Image
                             $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents(env('ADMIN_URL').'public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
-
+                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            
                             //Set Field data according to table columns
                             $data = array(
                                 'ip_address' => $request->ip(),
@@ -397,14 +400,14 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                             $image_id = DB::table('tbl_products_images')
                                             ->insertGetId($data);
 
-                            $pro_images[$row] = $image; 
+                            $pro_images[] = $image; 
                         }
                         
                         //Set Field data according to table columns
                         $data = array(
                             'ip_address' => $request->ip(),
                             'user_id' => $request->session()->get('user_details')['id'],
-                            'featured_image' => $pro_images[$row],
+                            'featured_image' => $pro_images[0],
                             'product_id' => $product_id,
                         );
 
@@ -688,20 +691,14 @@ $html .=    '<div class="row main" data-id="'.$id.'">
     }
 
     function update(Request $request, $id){
-        //die('out');
         if(!empty($request->session()->get('user_details')['id'] && $request->session()->get('user_details')['role'] == 2 && $id)){
-            //Get All Inputs
-            $images = $request->input('images');
-            $images_url = $request->input('url');
-            $variation = $request->input('variation');
-            
             //Inputs Validation
             $input_validations = $request->validate([
                 'name' => 'required',
-                'parent_category' => 'required',
-                'child_category' => 'required',
-                'sub_child_category' => 'required',
-                'brand' => 'required',
+                'parent_category' => 'required|numeric',
+                'child_category' => 'required|numeric',
+                'sub_child_category' => 'required|numeric',
+                'brand' => 'required|numeric',
                 'high_light' => 'required',
                 'description' => 'required',
                 'warranty_type' => 'required',
@@ -718,13 +715,20 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'sale_price' => 'nullable|numeric',
                 'from' => 'nullable',
                 'to' => 'nullable',
+                'video_url' => 'nullable',
                 'meta_keywords' => 'nullable',
                 'meta_description' => 'nullable',
                 'images.*' => 'required',
                 'url.*' => 'required',
             ]);
             
-            if(!empty($variation)){
+            if(!empty($request->input('variation'))){
+                //Query For Getting Vendor Id
+                $query = DB::table('tbl_store_settings')
+                             ->select('store_name')
+                             ->where('vendor_id', $request->session()->get('user_details')['id']);
+                $vendor_details = $query->first();
+
                 if($request->input('sale_price') >= $request->input('price')){
                     //Flash Error Msg
                     $request->session()->flash('alert-danger', 'Special price must be less than the price.');
@@ -733,13 +737,13 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                     return redirect()->back()->withInput($request->all());
                 }else{
                     $count = 0;
-                    foreach($images_url[$variation] as $url){
-                        if(!empty(file_exists(env('ADMIN_URL').'public/assets/admin/images/ecommerce/products/'.$images[$variation][$count]))){
-                            $image = $images[$variation][$count];
+                    foreach($request->input('url')[$request->input('variation')] as $url){
+                        if(!empty(file_exists(env('ADMIN_URL').'public/assets/admin/images/ecommerce/products/'.$request->input('images')[$request->input('variation')][$count]))){
+                            $image = $request->input('images')[$request->input('variation')][$count];
                         }else{
                             //Upload Product Image
                             $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents(env('ADMIN_URL').'public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
                         }
                         $pro_images[] = $image;
                         $count++;
@@ -758,7 +762,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         'ip_address' => $request->ip(),
                         'user_id' => $request->session()->get('user_details')['id'],
                         'name' => $request->input('name'),
-                        'slug' => strtolower(str_replace(' ', '-', $request->input('name'))),
+                        'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->input('name').'-'.$vendor_details->store_name))),
                         'high_light' => $request->input('high_light'),
                         'description' => $request->input('description'),
                         'warranty_type' => $request->input('warranty_type'),
@@ -767,7 +771,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         'length' => $request->input('length'),
                         'width' => $request->input('width'),
                         'height' => $request->input('height'),
-                        'variation_id' => $variation,
+                        'variation_id' => $request->input('variation'),
                         'sku_code' => $request->input('sku'),
                         'regural_price' => $request->input('price'),
                         'sale_price' => $request->input('sale_price'),
@@ -777,6 +781,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         'status' => $request->input('status'),
                         'meta_keywords' => $request->input('meta_keywords'),
                         'meta_description' => $request->input('meta_description'),
+                        'video_url' => $request->input('video_url'),
                         'created_date' => date('Y-m-d'),
                         'created_time' => date('h:i:s'),
                     );
@@ -956,11 +961,6 @@ $html .=    '<div class="row main" data-id="'.$id.'">
 
     function duplicate_insert(Request $request){
         if(!empty($request->session()->get('user_details')['id'] && $request->session()->get('user_details')['role'] == 2)){
-            //Get All Inputs
-            $images = $request->input('images');
-            $images_url = $request->input('url');
-            $variation = $request->input('variation');
-            
             //Inputs Validation
             $input_validations = $request->validate([
                 'name' => 'required',
@@ -975,7 +975,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'length' => 'nullable|numeric',
                 'width' => 'nullable|numeric',
                 'height' => 'nullable|numeric',
-                'variation' => 'required|numeric',
+                'variation' => 'required',
                 'product_images.*' => 'required|max:5120',
                 'status' => 'required',
                 'sku' => 'required',
@@ -984,13 +984,20 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'sale_price' => 'nullable|numeric',
                 'from' => 'nullable',
                 'to' => 'nullable',
+                'video_url' => 'nullable',
                 'meta_keywords' => 'nullable',
                 'meta_description' => 'nullable',
                 'images.*' => 'required',
                 'url.*' => 'required',
             ]);
 
-            if(!empty($variation)){
+            if(!empty($request->input('variation')[0])){
+                //Query For Getting Vendor Id
+                $query = DB::table('tbl_store_settings')
+                             ->select('store_name')
+                             ->where('vendor_id', $request->session()->get('user_details')['id']);
+                $vendor_details = $query->first();
+                
                 if($request->input('sale_price') >= $request->input('price')){
                     //Flash Error Msg
                     $request->session()->flash('alert-danger', 'Special price must be less than the price.');
@@ -999,10 +1006,10 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                     return redirect()->back()->withInput($request->all());
                 }else{
                     $count = 0;
-                    foreach($images_url[$variation] as $url){
+                    foreach($request->input('url')[$request->input('variation')[0]] as $url){
                         //Upload Product Image
                         $image = uniqid().'.jpeg';
-                        $image_path = file_put_contents(env('ADMIN_URL').'public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
                         $pro_images[] = $image;
                         $count++;
                     }
@@ -1020,7 +1027,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         'ip_address' => $request->ip(),
                         'user_id' => $request->session()->get('user_details')['id'],
                         'name' => $request->input('name'),
-                        'slug' => strtolower(str_replace(' ', '-', $request->input('name'))),
+                        'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->input('name').'-'.$vendor_details->store_name))),
                         'high_light' => $request->input('high_light'),
                         'description' => $request->input('description'),
                         'warranty_type' => $request->input('warranty_type'),
@@ -1029,7 +1036,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         'length' => $request->input('length'),
                         'width' => $request->input('width'),
                         'height' => $request->input('height'),
-                        'variation_id' => $variation,
+                        'variation_id' => $request->input('variation')[0],
                         'sku_code' => $request->input('sku'),
                         'regural_price' => $request->input('price'),
                         'sale_price' => $request->input('sale_price'),
@@ -1037,6 +1044,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         'from_date' => $from_date,
                         'to_date' => $to_date,
                         'status' => $request->input('status'),
+                        'video_url' => $request->input('video_url'),
                         'is_approved' => 1,
                         'meta_keywords' => $request->input('meta_keywords'),
                         'meta_description' => $request->input('meta_description'),
@@ -1101,7 +1109,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                                        ->insertGetId($data);
                 }
 
-                if(!empty($category_id == 1)){
+                if(!empty($category_id)){
                     //Flash Erro Msg
                     $request->session()->flash('alert-success', 'Product has been added successfully');
                 }else{
@@ -1120,8 +1128,42 @@ $html .=    '<div class="row main" data-id="'.$id.'">
         }
     }
 
-    function delete(Request $request){
+    function delete(Request $request, $id){
         if(!empty($request->session()->get('user_details')['id'] && $request->session()->get('user_details')['role'] == 2)){
+            //Query For Deleting details of this product
+            $p_id = DB::table('tbl_products')
+                         ->where('id', $id)
+                         ->where('user_id', $request->session()->get('user_details')['id'])
+                         ->delete();
+
+            //Query for Deleting brand of this product
+            $b_id = DB::table('tbl_product_brands')
+                         ->where('product_id', $id)
+                         ->where('user_id', $request->session()->get('user_details')['id'])
+                         ->delete();
+
+            //Query for Deleting categories of this product
+            $c_id = DB::table('tbl_product_categories')
+                         ->where('product_id', $id)
+                         ->where('user_id', $request->session()->get('user_details')['id'])
+                         ->delete();
+
+            //Query for Deleting images of this product
+            $i_id = DB::table('tbl_products_images')
+                         ->where('product_id', $id)
+                         ->where('user_id', $request->session()->get('user_details')['id'])
+                         ->delete();
+            
+            if(!empty($i_id && $b_id && $c_id && $i_id)){
+                //Flash Erro Msg
+                $request->session()->flash('alert-success', 'Product has been deleted successfully');
+            }else{
+                //Flash Erro Msg
+                $request->session()->flash('alert-danger', 'Something went wrong !!');
+            }
+
+            //Redirect
+            return redirect()->back();
         }else{
             print_r("<center><h4>Error 404 !!<br> You don't have accees of this page<br> Please move back<h4></center>");
         }
@@ -1137,15 +1179,15 @@ $html .=    '<div class="row main" data-id="'.$id.'">
             );
 
             $query = DB::table('tbl_products')
-                         ->select('tbl_products.id', 'featured_image', 'name', 'sku_code', 'created_date', 'regural_price', 'sale_price', 'quantity', 'status', 'from_date', 'to_date');
+                         ->select('tbl_products.id', 'tbl_products_featured_images.featured_image', 'name', 'slug', 'sku_code', 'created_date', 'regural_price', 'sale_price', 'quantity', 'status', 'is_approved', 'from_date', 'to_date')
+                         ->leftJoin('tbl_products_featured_images', 'tbl_products_featured_images.product_id', '=', 'tbl_products.id');
                          if(!empty($request->input('name'))){
                    $query->where('name', 'LIKE', '%'.$request->input('name').'%');
                          }
                          if(!empty($request->input('sku'))){
                    $query->where('sku_code', 'LIKE', '%'.$request->input('sku').'%');
                          }
-                   $query->leftJoin('tbl_products_featured_images', 'tbl_products_featured_images.product_id', '=', 'tbl_products.id')
-                         ->orderBy('id', 'DESC');
+                   $query->orderBy('id', 'DESC');
             $result['query'] = $query->paginate(10);
             $result['total_records'] = $result['query']->count();
 

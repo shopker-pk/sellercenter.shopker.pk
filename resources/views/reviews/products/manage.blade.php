@@ -59,38 +59,34 @@
                                 @if(!empty($query))
                                     @foreach($query as $row)
                                         <tr>
-                                            <td>{{ $row->name }}</td>
+                                            <td>{{ $row->product_name }}</td>
                                             <td>
                                                 <span>
-                                                    @if($row->stars == 1)
+                                                    @if($row->buyer_stars == 1)
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                    @elseif($row->stars == 2)
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                    @elseif($row->stars == 3)
+                                                    @elseif($row->buyer_stars == 2)
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                    @elseif($row->stars == 4)
+                                                    @elseif($row->buyer_stars == 3)
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
+                                                    @elseif($row->buyer_stars == 4)
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                    @elseif($row->stars == 5)
+                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
+                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
+                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
+                                                    @elseif($row->buyer_stars == 5)
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                         <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
                                                     @else
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
-                                                        <img src="{{ asset('public/assets/images/icons/star1.png') }}" style="width:12px; height:12px">
+                                                        0 Stars
                                                     @endif
                                                 </span><br>
-                                                <span>{{ $row->first_name }} {{ $row->last_name }} - {{ date('D-M-Y', strtotime($row->created_date)) }}</span><br>
+                                                <span>{{ $row->first_name }} {{ $row->last_name }} - {{ date('D-M-Y g:i:s A', strtotime($row->buyer_review_created_date.' '.$row->buyer_review_created_time)) }}</span><br>
                                                 <span>{{ $row->buyer_comment }}</span>
                                             </td>
                                             <td>
@@ -115,7 +111,7 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <label class="modal-title text-text-bold-600" id="myModalLabel33">Product Name : {{ $row->name }}</label><br>
+                                            <label class="modal-title text-text-bold-600" id="myModalLabel33">Product Name : {{ $row->product_name }}</label><br>
                                             <label class="modal-title text-text-bold-600" id="myModalLabel33">Customer Name : {{ $row->first_name }} {{ $row->last_name }}</label>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">×</span>

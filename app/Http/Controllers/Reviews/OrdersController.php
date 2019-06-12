@@ -16,12 +16,12 @@ class OrdersController extends Controller{
             );
             
             //Query for Getting Data
-            $query = DB::table('tbl_orders_review')
-                         ->select('tbl_orders_review.order_no', 'tbl_orders_review.stars', 'tbl_orders_review.buyer_comment', 'tbl_orders_review.vendor_comment', 'tbl_orders_review.created_date', 'tbl_orders_review.created_time', 'tbl_users.first_name', 'tbl_users.last_name')
-                         ->leftJoin('tbl_orders', 'tbl_orders.order_no', '=', 'tbl_orders_review.order_no')
-                         ->leftJoin('tbl_users', 'tbl_users.id', '=', 'tbl_orders_review.buyer_id')
+            $query = DB::table('tbl_orders_reviews')
+                         ->select('tbl_orders_reviews.id', 'tbl_orders.order_no', 'tbl_users.first_name', 'tbl_users.last_name', 'buyer_stars', 'vendor_stars', 'buyer_comment', 'vendor_comment', 'buyer_review_created_date', 'buyer_review_created_time', 'vendor_review_created_date', 'vendor_review_created_time')
+                         ->leftJoin('tbl_orders', 'tbl_orders.order_no', '=', 'tbl_orders_reviews.order_no')
+                         ->leftJoin('tbl_users', 'tbl_users.id', '=', 'tbl_orders_reviews.buyer_id')
                          ->where('tbl_orders.seller_id', $request->session()->get('user_details')['id'])
-                         ->orderBy('tbl_orders_review.id', 'DESC')
+                         ->orderBy('tbl_orders_reviews.id', 'DESC')
                          ->groupBy('tbl_orders.order_no');
             $result['query'] = $query->paginate(10);
             $result['total_records'] = $result['query']->count();
@@ -47,7 +47,7 @@ class OrdersController extends Controller{
             );
 
             //Query For Updating Data
-            $query = DB::table('tbl_orders_review')
+            $query = DB::table('tbl_orders_reviews')
                          ->where('order_no', $order_no)
                          ->update($data);
 
@@ -74,38 +74,38 @@ class OrdersController extends Controller{
                 'meta_keywords' => '',
                 'meta_description' => '',
             );
-
+            
             //Query for Getting Data
-            $query = DB::table('tbl_orders_review')
-                         ->select('tbl_orders_review.order_no', 'tbl_orders_review.stars', 'tbl_orders_review.buyer_comment', 'tbl_orders_review.vendor_comment', 'tbl_orders_review.created_date', 'tbl_orders_review.created_time', 'tbl_users.first_name', 'tbl_users.last_name')
-                         ->leftJoin('tbl_orders', 'tbl_orders.order_no', '=', 'tbl_orders_review.order_no')
-                         ->leftJoin('tbl_users', 'tbl_users.id', '=', 'tbl_orders_review.buyer_id');
+            $query = DB::table('tbl_orders_reviews')
+                         ->select('tbl_orders_reviews.id', 'tbl_orders.order_no', 'tbl_users.first_name', 'tbl_users.last_name', 'buyer_stars', 'vendor_stars', 'buyer_comment', 'vendor_comment', 'buyer_review_created_date', 'buyer_review_created_time', 'vendor_review_created_date', 'vendor_review_created_time')
+                         ->leftJoin('tbl_orders', 'tbl_orders.order_no', '=', 'tbl_orders_reviews.order_no')
+                         ->leftJoin('tbl_users', 'tbl_users.id', '=', 'tbl_orders_reviews.buyer_id')
+                         ->where('tbl_orders.seller_id', $request->session()->get('user_details')['id']);
                          if(!empty($request->input('order_no'))){
-                   $query->where('tbl_orders_review.order_no', $request->input('order_no'));
+                   $query->where('tbl_orders_reviews.order_no', $request->input('order_no'));
                          }
                          if(!empty($request->input('rating') == 0)){
-                   $query->where('tbl_orders_review.stars', '!=', NULL)
-                         ->where('tbl_orders_review.buyer_comment', NULL);
+                   $query->where('tbl_orders_reviews.buyer_stars', '!=', NULL)
+                         ->where('tbl_orders_reviews.buyer_comment', NULL);
                          }elseif(!empty($request->input('rating') == 1)){
-                   $query->where('tbl_orders_review.stars', NULL)
-                         ->where('tbl_orders_review.buyer_comment', '!=', NULL);
+                   $query->where('tbl_orders_reviews.buyer_stars', NULL)
+                         ->where('tbl_orders_reviews.buyer_comment', '!=', NULL);
                          }elseif(!empty($request->input('rating') == 2)){
-                   $query->where('tbl_orders_review.stars', '!=', NULL)
-                         ->where('tbl_orders_review.buyer_comment', '!=', NULL);
+                   $query->where('tbl_orders_reviews.buyer_stars', '!=', NULL)
+                         ->where('tbl_orders_reviews.buyer_comment', '!=', NULL);
                          }
                          if(!empty($request->input('reply') == 0)){
-                   $query->where('tbl_orders_review.vendor_comment', '!=', NULL);
+                   $query->where('tbl_orders_reviews.vendor_comment', '!=', NULL);
                          }elseif(!empty($request->input('reply') == 1)){
-                   $query->where('tbl_orders_review.vendor_comment', NULL);
+                   $query->where('tbl_orders_reviews.vendor_comment', NULL);
                          }
                          if(!empty($request->input('from'))){
-                   $query->where('tbl_orders_review.created_date', date('Y-m-d', strtotime($request->input('from'))));
+                   $query->where('tbl_orders_reviews.created_date', date('Y-m-d', strtotime($request->input('from'))));
                          }
                          if(!empty($request->input('to'))){
-                   $query->where('tbl_orders_review.created_date', date('Y-m-d', strtotime($request->input('to'))));
+                   $query->where('tbl_orders_reviews.created_date', date('Y-m-d', strtotime($request->input('to'))));
                          }
-                  $query->where('tbl_orders.seller_id', $request->session()->get('user_details')['id'])
-                         ->orderBy('tbl_orders_review.id', 'DESC')
+                   $query->orderBy('tbl_orders_reviews.id', 'DESC')
                          ->groupBy('tbl_orders.order_no');
             $result['query'] = $query->paginate(10);
             $result['total_records'] = $result['query']->count();

@@ -54,7 +54,7 @@
                                     <div class="show_featured_image"></div>
                                     @foreach($query as $row)
                                         <tr>
-                                            <td><span class="featured_image" data-id="{{ $count }}">{{ $row->name }}</span></td>
+                                            <td><span class="featured_image" data-id="{{ $count }}"><a href="{{ env('FRONTEND_URL').$row->slug }}" target="_blank">{{ $row->name }}</a></span></td>
                                             <td>{{ $row->sku_code }}</td>
                                             <td>{{ date('D-M-Y', strtotime($row->created_date)) }}</td>
                                             <td><a href="javascript::void(0);" class="cost_price" data-id="{{ $count }}">{{ $row->regural_price }}</a></td>
