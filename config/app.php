@@ -135,7 +135,7 @@ return [
     */
 
     //Custom Global Variables
-    'admin_url' => $_SERVER['DOCUMENT_ROOT'].'/shopker_admin/public/assets/admin/',
+    'admin_url' => $_SERVER['DOCUMENT_ROOT'].'/admin.shopker.pk/public/assets/admin/',
 
     'providers' => [
 

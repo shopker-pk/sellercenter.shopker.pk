@@ -63,11 +63,11 @@ class StoreController extends Controller{
 	        if(!empty($request->file('logo_image') && $request->file('banner_image'))){
 	        	//File Upload
         		$logo_image = uniqid().'.'.$request->file('logo_image')->guessExtension();
-                $image_path = $request->file('logo_image')->move($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/stores_logo/', $logo_image);
+                $image_path = $request->file('logo_image')->move($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/stores_logo/', $logo_image);
 
                 //File Upload
         		$banner_image = uniqid().'.'.$request->file('banner_image')->guessExtension();
-                $image_path = $request->file('banner_image')->move($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/stores_banners/', $banner_image);
+                $image_path = $request->file('banner_image')->move($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/stores_banners/', $banner_image);
 
                 //Set Field data according to table column
 		        $store_settings = array(
@@ -122,7 +122,7 @@ class StoreController extends Controller{
         	}elseif(!empty($request->file('banner_image'))){
         		//File Upload
         		$banner_image = uniqid().'.'.$request->file('banner_image')->guessExtension();
-                $image_path = $request->file('banner_image')->move($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/stores_banners/', $banner_image);
+                $image_path = $request->file('banner_image')->move($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/stores_banners/', $banner_image);
 
                 //Set Field data according to table column
 		        $store_settings = array(
@@ -176,7 +176,7 @@ class StoreController extends Controller{
         	}elseif(!empty($request->file('logo_image'))){
         		//File Upload
         		$logo_image  = uniqid().'.'.$request->file('logo_image')->guessExtension();
-                $image_path = $request->file('logo_image')->move($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/stores_logo/', $logo_image);
+                $image_path = $request->file('logo_image')->move($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/stores_logo/', $logo_image);
 
                 //Set Field data according to table column
 		        $store_settings = array(

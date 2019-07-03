@@ -173,6 +173,7 @@
                                         </label>
                                     </div>
                                     <div class="col-md-12 contain">
+                                        <input type="hidden" name="variation_id" value="{{ $query_product->variation_id }}">
                                         <select class="form-control select_2 variation_{{ $query_product->id }}" style="width:100%" data-id="{{ $query_product->id }}" disabled>
                                             <option>Select Variant</option>
                                             @foreach($variations as $row)
@@ -187,7 +188,6 @@
                                         </div>
                                         <div class="file-upload-content">
                                             <div class="col-md-12" id="preview_images_{{ $query_product->id }}">
-                                                <input type="hidden" name="variation" value="{{ $query_product->variation_id }}">
                                                 <ul id="sortable" class="sortable_dragable_image_ul preview_images_{{ $query_product->id }}">
                                                     @foreach($query_images as $row)
                                                         <li class="ui-state-default sortable_dragable_image_li remove_image_{{ $row->id }}" style="float:left;">

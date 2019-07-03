@@ -386,7 +386,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         foreach($request->input('url')[$row] as $url){
                             //Upload Product Image
                             $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
                             
                             //Set Field data according to table columns
                             $data = array(
@@ -706,7 +706,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'length' => 'nullable|numeric',
                 'width' => 'nullable|numeric',
                 'height' => 'nullable|numeric',
-                'variation.*' => 'required|numeric',
+                'variation_id' => 'required|numeric',
                 'product_images.*' => 'required|max:5120',
                 'status' => 'required',
                 'sku' => 'required',
@@ -722,7 +722,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'url.*' => 'required',
             ]);
             
-            if(!empty($request->input('variation'))){
+            if(!empty($request->input('variation_id'))){
                 //Query For Getting Vendor Id
                 $query = DB::table('tbl_store_settings')
                              ->select('store_name')
@@ -737,13 +737,13 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                     return redirect()->back()->withInput($request->all());
                 }else{
                     $count = 0;
-                    foreach($request->input('url')[$request->input('variation')] as $url){
-                        if(!empty(file_exists(env('ADMIN_URL').'public/assets/admin/images/ecommerce/products/'.$request->input('images')[$request->input('variation')][$count]))){
-                            $image = $request->input('images')[$request->input('variation')][$count];
+                    foreach($request->input('url')[$request->input('variation_id')] as $url){
+                        if(!empty(file_exists(env('ADMIN_URL').'public/assets/admin/images/ecommerce/products/'.$request->input('images')[$request->input('variation_id')][$count]))){
+                            $image = $request->input('images')[$request->input('variation_id')][$count];
                         }else{
                             //Upload Product Image
                             $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
                         }
                         $pro_images[] = $image;
                         $count++;
@@ -771,7 +771,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         'length' => $request->input('length'),
                         'width' => $request->input('width'),
                         'height' => $request->input('height'),
-                        'variation_id' => $request->input('variation'),
+                        'variation_id' => $request->input('variation_id'),
                         'sku_code' => $request->input('sku'),
                         'regural_price' => $request->input('price'),
                         'sale_price' => $request->input('sale_price'),
@@ -975,7 +975,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'length' => 'nullable|numeric',
                 'width' => 'nullable|numeric',
                 'height' => 'nullable|numeric',
-                'variation' => 'required',
+                'variation_id' => 'required',
                 'product_images.*' => 'required|max:5120',
                 'status' => 'required',
                 'sku' => 'required',
@@ -991,7 +991,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'url.*' => 'required',
             ]);
 
-            if(!empty($request->input('variation')[0])){
+            if(!empty($request->input('variation_id'))){
                 //Query For Getting Vendor Id
                 $query = DB::table('tbl_store_settings')
                              ->select('store_name')
@@ -1006,10 +1006,10 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                     return redirect()->back()->withInput($request->all());
                 }else{
                     $count = 0;
-                    foreach($request->input('url')[$request->input('variation')[0]] as $url){
+                    foreach($request->input('url')[$request->input('variation_id')] as $url){
                         //Upload Product Image
                         $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/shopker_admin/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
                         $pro_images[] = $image;
                         $count++;
                     }
@@ -1036,7 +1036,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         'length' => $request->input('length'),
                         'width' => $request->input('width'),
                         'height' => $request->input('height'),
-                        'variation_id' => $request->input('variation')[0],
+                        'variation_id' => $request->input('variation_id'),
                         'sku_code' => $request->input('sku'),
                         'regural_price' => $request->input('price'),
                         'sale_price' => $request->input('sale_price'),

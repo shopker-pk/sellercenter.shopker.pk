@@ -51,7 +51,7 @@
                                 </tr>
                                 @if(!empty($query))
                                     <input type="hidden" value="{{ $count = 0 }}">
-                                    <div class="show_featured_image"></div>
+                                    <!-- <div class="show_featured_image"></div> -->
                                     @foreach($query as $row)
                                         <tr>
                                             <td><span class="featured_image" data-id="{{ $count }}"><a href="{{ env('FRONTEND_URL').$row->slug }}" target="_blank">{{ $row->name }}</a></span></td>
