@@ -60,7 +60,7 @@ class ProfileController extends Controller{
 	        	if(!empty($request->input('confirm_password'))){
 	        		//File Upload
 	        		$image = uniqid().'.'.$request->file('image')->guessExtension();
-	                $image_path = $request->file('image')->move($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/profile_images/', $image);
+	                $image_path = $request->file('image')->move('/var/www/admin.shopker.pk/public/assets/admin/images/profile_images/', $image);
 		        	
 		        	//Set Field data according to table column
 			        $data = array(
@@ -114,7 +114,7 @@ class ProfileController extends Controller{
 				}else{
 	        		//File Upload
 	        		$image = uniqid().'.'.$request->file('image')->guessExtension();
-	                $image_path = $request->file('image')->move($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/profile_images/', $image);
+	                $image_path = $request->file('image')->move('/var/www/admin.shopker.pk/public/assets/admin/images/profile_images/', $image);
 
 	        		//Set Field data according to table column
 			        $data = array(

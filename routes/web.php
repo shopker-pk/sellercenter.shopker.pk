@@ -1,7 +1,7 @@
 <?php
 	//Vendor Panel Routes Start
 		//Auth Routes Start
-			Route::get('/vendor/sign-in', 'Auth\AuthController@sign_in')->name('vendor_sign_in');
+			Route::get('/', 'Auth\AuthController@sign_in')->name('vendor_sign_in');
 			Route::post('/vendor/validating-credentials', 'Auth\AuthController@validating_credentials')->name('vendor_validating_credentials');
 			Route::get('/vendor/sign-out', 'Auth\AuthController@sign_out')->name('vendor_sign_out');
 		//Auth Routes End

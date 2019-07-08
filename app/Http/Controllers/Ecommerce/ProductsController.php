@@ -386,7 +386,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         foreach($request->input('url')[$row] as $url){
                             //Upload Product Image
                             $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            $image_path = file_put_contents('/var/www/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
                             
                             //Set Field data according to table columns
                             $data = array(
@@ -743,7 +743,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                         }else{
                             //Upload Product Image
                             $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            $image_path = file_put_contents('/var/www/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
                         }
                         $pro_images[] = $image;
                         $count++;
@@ -1009,7 +1009,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                     foreach($request->input('url')[$request->input('variation_id')] as $url){
                         //Upload Product Image
                         $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents($_SERVER["DOCUMENT_ROOT"].'/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            $image_path = file_put_contents('/var/www/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
                         $pro_images[] = $image;
                         $count++;
                     }
