@@ -43,14 +43,14 @@
             </li>
             <li class="treeview">
                 <a href="#">
-                    <i class="fa fa-shopping-cart"></i> <span>Orders</span>
+                    <i class="fa fa-shopping-cart"></i> <span>Orders {{ count_new_orders() }}</span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a href="{{ route('manage_orders') }}"><i class="fa fa-circle-o"></i> Manage Orders</a>
+                        <a href="{{ route('manage_orders') }}"><i class="fa fa-circle-o"></i> Manage Orders {{ count_new_orders() }}</a>
                         <a href="{{ route('manage_invoices') }}"><i class="fa fa-circle-o"></i> Manage Invoices</a>
                     </li>
                 </ul>
