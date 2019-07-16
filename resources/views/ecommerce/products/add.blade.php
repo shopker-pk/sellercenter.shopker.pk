@@ -84,7 +84,7 @@
                                 <div class="form-group">
                                     <label>Product Description</label><label class="label-control" style="color:red">*</label>
                                     <div class="box-body pad">
-                                        <textarea name="description" id="description" class="form-control wysihtml5" placeholder="Product High Light*" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('description') }}</textarea>
+                                        <textarea name="description" id="description" class="form-control wysihtml5" placeholder="Product Description*" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('description') }}</textarea>
                                     </div>
                                 </div>
                             </div>

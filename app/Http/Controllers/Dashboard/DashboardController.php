@@ -78,14 +78,9 @@ class DashboardController extends Controller{
                     'DATA' => $data,
                 );
             }else{
-                $data = array(
-                    'month' => date('M'),
-                    'sale' => '00',
-                );
-
                $ajax_response_data = array(
                     'ERROR' => 'TRUE',
-                    'DATA' => $data,
+                    'DATA' => '',
                 ); 
             }
 
