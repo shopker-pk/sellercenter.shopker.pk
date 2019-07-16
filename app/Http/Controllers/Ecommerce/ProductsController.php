@@ -1180,7 +1180,8 @@ $html .=    '<div class="row main" data-id="'.$id.'">
 
             $query = DB::table('tbl_products')
                          ->select('tbl_products.id', 'tbl_products_featured_images.featured_image', 'name', 'slug', 'sku_code', 'created_date', 'regural_price', 'sale_price', 'quantity', 'status', 'is_approved', 'from_date', 'to_date')
-                         ->leftJoin('tbl_products_featured_images', 'tbl_products_featured_images.product_id', '=', 'tbl_products.id');
+                         ->leftJoin('tbl_products_featured_images', 'tbl_products_featured_images.product_id', '=', 'tbl_products.id')
+                         ->where('tbl_products.user_id', $request->session()->get('user_details')['id']);
                          if(!empty($request->input('name'))){
                    $query->where('name', 'LIKE', '%'.$request->input('name').'%');
                          }
