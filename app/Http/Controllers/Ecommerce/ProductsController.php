@@ -324,147 +324,152 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'url.*' => 'required',
             ]);
 
-            if(!empty($request->input('variation'))){
-                //Query For Getting Vendor Id
-                $query = DB::table('tbl_store_settings')
-                             ->select('store_name')
-                             ->where('vendor_id', $request->session()->get('user_details')['id']);
-                $vendor_details = $query->first();
+            if(!empty($request->input('status') && $request->input('variation') && $request->input('product_images') && $request->input('sku') && $request->input('quantity') && $request->input('price') && $request->input('sale_price') && $request->input('from') && $request->input('to'))){
+                if(!empty($request->input('variation'))){
+                    //Query For Getting Vendor Id
+                    $query = DB::table('tbl_store_settings')
+                                 ->select('store_name')
+                                 ->where('vendor_id', $request->session()->get('user_details')['id']);
+                    $vendor_details = $query->first();
 
-                $count = 0;
-                foreach($request->input('variation') as $row){
-                    if($request->input('sale_price')[$count] >= $request->input('price')[$count]){
-                        //Flash Error Msg
-                        $request->session()->flash('alert-danger', 'Special price must be less than the price.');
+                    $count = 0;
+                    foreach($request->input('variation') as $row){
+                        if($request->input('sale_price')[$count] >= $request->input('price')[$count]){
+                            //Flash Error Msg
+                            $request->session()->flash('alert-danger', 'Special price must be less than the price.');
 
-                        //Redirect
-                        return redirect()->back()->withInput($request->all());
-                    }else{
-                        if(!empty($request->input('from')[$count] && $request->input('to')[$count])){
-                            $from_date = date('Y-m-d', strtotime($request->input('from')[$count]));
-                            $to_date = date('Y-m-d', strtotime($request->input('to')[$count]));
+                            //Redirect
+                            return redirect()->back()->withInput($request->all());
                         }else{
-                            $from_date = NULL;
-                            $to_date = NULL;
-                        } 
+                            if(!empty($request->input('from')[$count] && $request->input('to')[$count])){
+                                $from_date = date('Y-m-d', strtotime($request->input('from')[$count]));
+                                $to_date = date('Y-m-d', strtotime($request->input('to')[$count]));
+                            }else{
+                                $from_date = NULL;
+                                $to_date = NULL;
+                            } 
 
-                        //Set Field data according to table columns
-                        $data = array(
-                            'ip_address' => $request->ip(),
-                            'user_id' => $request->session()->get('user_details')['id'],
-                            'name' => $request->input('name'),
-                            'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->input('name').'-'.$vendor_details->store_name))),
-                            'high_light' => $request->input('high_light'),
-                            'description' => $request->input('description'),
-                            'warranty_type' => $request->input('warranty_type'),
-                            'what_in_the_box' => $request->input('what_in_the_box'),
-                            'weight' => $request->input('weight'),
-                            'length' => $request->input('length'),
-                            'width' => $request->input('width'),
-                            'height' => $request->input('height'),
-                            'variation_id' => $row,
-                            'sku_code' => $request->input('sku')[$count],
-                            'regural_price' => $request->input('price')[$count],
-                            'sale_price' => $request->input('sale_price')[$count],
-                            'quantity' => $request->input('quantity')[$count],
-                            'from_date' => $from_date,
-                            'to_date' => $to_date,
-                            'status' => $request->input('status')[$count],
-                            'is_approved' => 1,
-                            'meta_keywords' => $request->input('meta_keywords'),
-                            'meta_description' => $request->input('meta_description'),
-                            'video_url' => $request->input('video_url'),
-                            'created_date' => date('Y-m-d'),
-                            'created_time' => date('h:i:s'),
-                        );
+                            //Set Field data according to table columns
+                            $data = array(
+                                'ip_address' => $request->ip(),
+                                'user_id' => $request->session()->get('user_details')['id'],
+                                'name' => $request->input('name'),
+                                'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->input('name').'-'.$vendor_details->store_name))),
+                                'high_light' => $request->input('high_light'),
+                                'description' => $request->input('description'),
+                                'warranty_type' => $request->input('warranty_type'),
+                                'what_in_the_box' => $request->input('what_in_the_box'),
+                                'weight' => $request->input('weight'),
+                                'length' => $request->input('length'),
+                                'width' => $request->input('width'),
+                                'height' => $request->input('height'),
+                                'variation_id' => $row,
+                                'sku_code' => $request->input('sku')[$count],
+                                'regural_price' => $request->input('price')[$count],
+                                'sale_price' => $request->input('sale_price')[$count],
+                                'quantity' => $request->input('quantity')[$count],
+                                'from_date' => $from_date,
+                                'to_date' => $to_date,
+                                'status' => $request->input('status')[$count],
+                                'is_approved' => 1,
+                                'meta_keywords' => $request->input('meta_keywords'),
+                                'meta_description' => $request->input('meta_description'),
+                                'video_url' => $request->input('video_url'),
+                                'created_date' => date('Y-m-d'),
+                                'created_time' => date('h:i:s'),
+                            );
 
-                        //Query For Inserting Data
-                        $product_id = DB::table('tbl_products')
-                                          ->insertGetId($data);    
-                        $count++;
+                            //Query For Inserting Data
+                            $product_id = DB::table('tbl_products')
+                                              ->insertGetId($data);    
+                            $count++;
 
-                        foreach($request->input('url')[$row] as $url){
-                            //Upload Product Image
-                            $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents('/var/www/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            foreach($request->input('url')[$row] as $url){
+                                //Upload Product Image
+                                $image = uniqid().'.jpeg';
+                                $image_path = file_put_contents('/var/www/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                                
+                                //Set Field data according to table columns
+                                $data = array(
+                                    'ip_address' => $request->ip(),
+                                    'user_id' => $request->session()->get('user_details')['id'],
+                                    'product_id' => $product_id,
+                                    'image' => $image,
+                                ); 
+                                
+                                //Query For Inserting Data
+                                $image_id = DB::table('tbl_products_images')
+                                                ->insertGetId($data);
+
+                                $pro_images[] = $image; 
+                            }
                             
                             //Set Field data according to table columns
                             $data = array(
                                 'ip_address' => $request->ip(),
                                 'user_id' => $request->session()->get('user_details')['id'],
+                                'featured_image' => $pro_images[0],
                                 'product_id' => $product_id,
-                                'image' => $image,
-                            ); 
-                            
+                            );
+
                             //Query For Inserting Data
-                            $image_id = DB::table('tbl_products_images')
+                            $brand_id = DB::table('tbl_products_featured_images')
                                             ->insertGetId($data);
 
-                            $pro_images[] = $image; 
+                            //Set Field data according to table columns
+                            $data = array(
+                                'ip_address' => $request->ip(),
+                                'user_id' => $request->session()->get('user_details')['id'],
+                                'product_id' => $product_id,
+                                'brand_id' => $request->input('brand'),
+                            );
+
+                            //Query For Inserting Data
+                            $brand_id = DB::table('tbl_product_brands')
+                                            ->insertGetId($data);
+
+                            //Set Field data according to table columns
+                            $data = array(
+                                'ip_address' => $request->ip(),
+                                'user_id' => $request->session()->get('user_details')['id'],
+                                'product_id' => $product_id,
+                                'parent_id' => $request->input('parent_category'),
+                                'child_id' => $request->input('child_category'),
+                                'sub_child_id' => $request->input('sub_child_category'),
+                            );
+
+                            //Query For Inserting Data
+                            $category_id = DB::table('tbl_product_categories')
+                                               ->insertGetId($data);
                         }
-                        
-                        //Set Field data according to table columns
-                        $data = array(
-                            'ip_address' => $request->ip(),
-                            'user_id' => $request->session()->get('user_details')['id'],
-                            'featured_image' => $pro_images[0],
-                            'product_id' => $product_id,
-                        );
-
-                        //Query For Inserting Data
-                        $brand_id = DB::table('tbl_products_featured_images')
-                                        ->insertGetId($data);
-
-                        //Set Field data according to table columns
-                        $data = array(
-                            'ip_address' => $request->ip(),
-                            'user_id' => $request->session()->get('user_details')['id'],
-                            'product_id' => $product_id,
-                            'brand_id' => $request->input('brand'),
-                        );
-
-                        //Query For Inserting Data
-                        $brand_id = DB::table('tbl_product_brands')
-                                        ->insertGetId($data);
-
-                        //Set Field data according to table columns
-                        $data = array(
-                            'ip_address' => $request->ip(),
-                            'user_id' => $request->session()->get('user_details')['id'],
-                            'product_id' => $product_id,
-                            'parent_id' => $request->input('parent_category'),
-                            'child_id' => $request->input('child_category'),
-                            'sub_child_id' => $request->input('sub_child_category'),
-                        );
-
-                        //Query For Inserting Data
-                        $category_id = DB::table('tbl_product_categories')
-                                           ->insertGetId($data);
                     }
-                }
 
-                if(!empty($category_id)){
-                    //Flash Error Msg
-                    $request->session()->flash('alert-success', 'Product has been added successfully');
+                    if(!empty($category_id)){
+                        //Flash Error Msg
+                        $request->session()->flash('alert-success', 'Product has been added successfully');
+                    }else{
+                        $p_id = DB::table('tbl_products')
+                                     ->where('id', $product_id)
+                                     ->delete();
+
+                        $b_id = DB::table('tbl_product_brands')
+                                     ->where('product_id', $product_id)
+                                     ->delete();
+
+                        $c_id = DB::table('tbl_product_categories')
+                                     ->where('product_id', $product_id)
+                                     ->delete();
+
+                        $i_id = DB::table('tbl_products_images')
+                                     ->where('product_id', $product_id)
+                                     ->delete();
+                                     
+                        //Flash Erro Msg
+                        $request->session()->flash('alert-danger', 'Something went wrong !!');
+                    }
                 }else{
-                    $p_id = DB::table('tbl_products')
-                                 ->where('id', $product_id)
-                                 ->delete();
-
-                    $b_id = DB::table('tbl_product_brands')
-                                 ->where('product_id', $product_id)
-                                 ->delete();
-
-                    $c_id = DB::table('tbl_product_categories')
-                                 ->where('product_id', $product_id)
-                                 ->delete();
-
-                    $i_id = DB::table('tbl_products_images')
-                                 ->where('product_id', $product_id)
-                                 ->delete();
-                                 
                     //Flash Erro Msg
-                    $request->session()->flash('alert-danger', 'Something went wrong !!');
+                    $request->session()->flash('alert-danger', 'Variation is required for adding products.');
                 }
             }else{
                 //Flash Erro Msg
@@ -722,145 +727,151 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'url.*' => 'required',
             ]);
             
-            if(!empty($request->input('variation_id'))){
-                //Query For Getting Vendor Id
-                $query = DB::table('tbl_store_settings')
-                             ->select('store_name')
-                             ->where('vendor_id', $request->session()->get('user_details')['id']);
-                $vendor_details = $query->first();
+            if(!empty($request->input('status') && $request->input('variation') && $request->input('product_images') && $request->input('sku') && $request->input('quantity') && $request->input('price') && $request->input('sale_price') && $request->input('from') && $request->input('to'))){
+                if(!empty($request->input('variation'))){
+                if(!empty($request->input('variation_id'))){
+                    //Query For Getting Vendor Id
+                    $query = DB::table('tbl_store_settings')
+                                 ->select('store_name')
+                                 ->where('vendor_id', $request->session()->get('user_details')['id']);
+                    $vendor_details = $query->first();
 
-                if($request->input('sale_price') >= $request->input('price')){
-                    //Flash Error Msg
-                    $request->session()->flash('alert-danger', 'Special price must be less than the price.');
+                    if($request->input('sale_price') >= $request->input('price')){
+                        //Flash Error Msg
+                        $request->session()->flash('alert-danger', 'Special price must be less than the price.');
 
-                    //Redirect
-                    return redirect()->back()->withInput($request->all());
-                }else{
-                    $count = 0;
-                    foreach($request->input('url')[$request->input('variation_id')] as $url){
-                        if(!empty(file_exists(env('ADMIN_URL').'public/assets/admin/images/ecommerce/products/'.$request->input('images')[$request->input('variation_id')][$count]))){
-                            $image = $request->input('images')[$request->input('variation_id')][$count];
-                        }else{
-                            //Upload Product Image
-                            $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents('/var/www/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
-                        }
-                        $pro_images[] = $image;
-                        $count++;
-                    }
-
-                    if(!empty($request->input('from') && $request->input('to'))){
-                        $from_date = date('Y-m-d', strtotime($request->input('from')));
-                        $to_date = date('Y-m-d', strtotime($request->input('to')));
+                        //Redirect
+                        return redirect()->back()->withInput($request->all());
                     }else{
-                        $from_date = NULL;
-                        $to_date = NULL;
-                    } 
+                        $count = 0;
+                        foreach($request->input('url')[$request->input('variation_id')] as $url){
+                            if(!empty(file_exists(env('ADMIN_URL').'public/assets/admin/images/ecommerce/products/'.$request->input('images')[$request->input('variation_id')][$count]))){
+                                $image = $request->input('images')[$request->input('variation_id')][$count];
+                            }else{
+                                //Upload Product Image
+                                $image = uniqid().'.jpeg';
+                                $image_path = file_put_contents('/var/www/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            }
+                            $pro_images[] = $image;
+                            $count++;
+                        }
 
-                    //Set Field data according to table columns
-                    $data = array(
-                        'ip_address' => $request->ip(),
-                        'user_id' => $request->session()->get('user_details')['id'],
-                        'name' => $request->input('name'),
-                        'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->input('name').'-'.$vendor_details->store_name))),
-                        'high_light' => $request->input('high_light'),
-                        'description' => $request->input('description'),
-                        'warranty_type' => $request->input('warranty_type'),
-                        'what_in_the_box' => $request->input('what_in_the_box'),
-                        'weight' => $request->input('weight'),
-                        'length' => $request->input('length'),
-                        'width' => $request->input('width'),
-                        'height' => $request->input('height'),
-                        'variation_id' => $request->input('variation_id'),
-                        'sku_code' => $request->input('sku'),
-                        'regural_price' => $request->input('price'),
-                        'sale_price' => $request->input('sale_price'),
-                        'quantity' => $request->input('quantity'),
-                        'from_date' => $from_date,
-                        'to_date' => $to_date,
-                        'status' => $request->input('status'),
-                        'meta_keywords' => $request->input('meta_keywords'),
-                        'meta_description' => $request->input('meta_description'),
-                        'video_url' => $request->input('video_url'),
-                        'created_date' => date('Y-m-d'),
-                        'created_time' => date('h:i:s'),
-                    );
+                        if(!empty($request->input('from') && $request->input('to'))){
+                            $from_date = date('Y-m-d', strtotime($request->input('from')));
+                            $to_date = date('Y-m-d', strtotime($request->input('to')));
+                        }else{
+                            $from_date = NULL;
+                            $to_date = NULL;
+                        } 
 
-                    //Query For Updating Data
-                    $product_id = DB::table('tbl_products')
-                                 ->where('id', $id)
-                                 ->where('user_id', $request->session()->get('user_details')['id'])
-                                 ->update($data);
-
-                    //Query For Deleting Previous Images
-                    $query = DB::table('tbl_products_images')
-                                 ->where('product_id', $id)
-                                 ->where('user_id', $request->session()->get('user_details')['id'])
-                                 ->delete();
-
-                    foreach($pro_images as $image){
                         //Set Field data according to table columns
                         $data = array(
                             'ip_address' => $request->ip(),
                             'user_id' => $request->session()->get('user_details')['id'],
+                            'name' => $request->input('name'),
+                            'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->input('name').'-'.$vendor_details->store_name))),
+                            'high_light' => $request->input('high_light'),
+                            'description' => $request->input('description'),
+                            'warranty_type' => $request->input('warranty_type'),
+                            'what_in_the_box' => $request->input('what_in_the_box'),
+                            'weight' => $request->input('weight'),
+                            'length' => $request->input('length'),
+                            'width' => $request->input('width'),
+                            'height' => $request->input('height'),
+                            'variation_id' => $request->input('variation_id'),
+                            'sku_code' => $request->input('sku'),
+                            'regural_price' => $request->input('price'),
+                            'sale_price' => $request->input('sale_price'),
+                            'quantity' => $request->input('quantity'),
+                            'from_date' => $from_date,
+                            'to_date' => $to_date,
+                            'status' => $request->input('status'),
+                            'meta_keywords' => $request->input('meta_keywords'),
+                            'meta_description' => $request->input('meta_description'),
+                            'video_url' => $request->input('video_url'),
+                            'created_date' => date('Y-m-d'),
+                            'created_time' => date('h:i:s'),
+                        );
+
+                        //Query For Updating Data
+                        $product_id = DB::table('tbl_products')
+                                     ->where('id', $id)
+                                     ->where('user_id', $request->session()->get('user_details')['id'])
+                                     ->update($data);
+
+                        //Query For Deleting Previous Images
+                        $query = DB::table('tbl_products_images')
+                                     ->where('product_id', $id)
+                                     ->where('user_id', $request->session()->get('user_details')['id'])
+                                     ->delete();
+
+                        foreach($pro_images as $image){
+                            //Set Field data according to table columns
+                            $data = array(
+                                'ip_address' => $request->ip(),
+                                'user_id' => $request->session()->get('user_details')['id'],
+                                'product_id' => $id,
+                                'image' => $image,
+                            ); 
+                            
+                            //Query For Inserting Data
+                            $image_id = DB::table('tbl_products_images')
+                                            ->insertGetId($data);
+                        }
+
+                        //Set Field data according to table columns
+                        $data = array(
+                            'ip_address' => $request->ip(),
+                            'user_id' => $request->session()->get('user_details')['id'],
+                            'featured_image' => $pro_images[0],
                             'product_id' => $id,
-                            'image' => $image,
-                        ); 
-                        
+                        );
+
                         //Query For Inserting Data
-                        $image_id = DB::table('tbl_products_images')
-                                        ->insertGetId($data);
+                        $brand_id = DB::table('tbl_products_featured_images')
+                                        ->where('product_id', $id)
+                                        ->where('user_id', $request->session()->get('user_details')['id'])
+                                        ->update($data);
+
+                        //Set Field data according to table columns
+                        $data = array(
+                            'user_id' => $request->session()->get('user_details')['id'],
+                            'ip_address' => $request->ip(),
+                            'brand_id' => $request->input('brand'),
+                        );
+
+                        //Query For Updating Data
+                        $brand_id = DB::table('tbl_product_brands')
+                                        ->where('product_id', $id)
+                                        ->where('user_id', $request->session()->get('user_details')['id'])
+                                        ->update($data);
+
+                        //Set Field data according to table columns
+                        $data = array(
+                            'ip_address' => $request->ip(),
+                            'user_id' => $request->session()->get('user_details')['id'],
+                            'parent_id' => $request->input('parent_category'),
+                            'child_id' => $request->input('child_category'),
+                            'sub_child_id' => $request->input('sub_child_category'),
+                        );
+
+                        //Query For Updating Data
+                        $category_id = DB::table('tbl_product_categories')
+                                           ->where('product_id', $id)
+                                           ->where('user_id', $request->session()->get('user_details')['id'])
+                                           ->update($data);
                     }
 
-                    //Set Field data according to table columns
-                    $data = array(
-                        'ip_address' => $request->ip(),
-                        'user_id' => $request->session()->get('user_details')['id'],
-                        'featured_image' => $pro_images[0],
-                        'product_id' => $id,
-                    );
-
-                    //Query For Inserting Data
-                    $brand_id = DB::table('tbl_products_featured_images')
-                                    ->where('product_id', $id)
-                                    ->where('user_id', $request->session()->get('user_details')['id'])
-                                    ->update($data);
-
-                    //Set Field data according to table columns
-                    $data = array(
-                        'user_id' => $request->session()->get('user_details')['id'],
-                        'ip_address' => $request->ip(),
-                        'brand_id' => $request->input('brand'),
-                    );
-
-                    //Query For Updating Data
-                    $brand_id = DB::table('tbl_product_brands')
-                                    ->where('product_id', $id)
-                                    ->where('user_id', $request->session()->get('user_details')['id'])
-                                    ->update($data);
-
-                    //Set Field data according to table columns
-                    $data = array(
-                        'ip_address' => $request->ip(),
-                        'user_id' => $request->session()->get('user_details')['id'],
-                        'parent_id' => $request->input('parent_category'),
-                        'child_id' => $request->input('child_category'),
-                        'sub_child_id' => $request->input('sub_child_category'),
-                    );
-
-                    //Query For Updating Data
-                    $category_id = DB::table('tbl_product_categories')
-                                       ->where('product_id', $id)
-                                       ->where('user_id', $request->session()->get('user_details')['id'])
-                                       ->update($data);
-                }
-
-                if(!empty($category_id == 0)){
-                    //Flash Erro Msg
-                    $request->session()->flash('alert-success', 'Product has been updated successfully');
+                    if(!empty($category_id == 0)){
+                        //Flash Erro Msg
+                        $request->session()->flash('alert-success', 'Product has been updated successfully');
+                    }else{
+                        //Flash Erro Msg
+                        $request->session()->flash('alert-danger', 'Something went wrong !!');
+                    }
                 }else{
                     //Flash Erro Msg
-                    $request->session()->flash('alert-danger', 'Something went wrong !!');
+                    $request->session()->flash('alert-danger', 'Variation is required for adding products.');
                 }
             }else{
                 //Flash Erro Msg
@@ -991,130 +1002,135 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'url.*' => 'required',
             ]);
 
-            if(!empty($request->input('variation_id'))){
-                //Query For Getting Vendor Id
-                $query = DB::table('tbl_store_settings')
-                             ->select('store_name')
-                             ->where('vendor_id', $request->session()->get('user_details')['id']);
-                $vendor_details = $query->first();
-                
-                if($request->input('sale_price') >= $request->input('price')){
-                    //Flash Error Msg
-                    $request->session()->flash('alert-danger', 'Special price must be less than the price.');
+            if(!empty($request->input('status') && $request->input('variation') && $request->input('product_images') && $request->input('sku') && $request->input('quantity') && $request->input('price') && $request->input('sale_price') && $request->input('from') && $request->input('to'))){
+                if(!empty($request->input('variation_id'))){
+                    //Query For Getting Vendor Id
+                    $query = DB::table('tbl_store_settings')
+                                 ->select('store_name')
+                                 ->where('vendor_id', $request->session()->get('user_details')['id']);
+                    $vendor_details = $query->first();
+                    
+                    if($request->input('sale_price') >= $request->input('price')){
+                        //Flash Error Msg
+                        $request->session()->flash('alert-danger', 'Special price must be less than the price.');
 
-                    //Redirect
-                    return redirect()->back()->withInput($request->all());
-                }else{
-                    $count = 0;
-                    foreach($request->input('url')[$request->input('variation_id')] as $url){
-                        //Upload Product Image
-                        $image = uniqid().'.jpeg';
-                            $image_path = file_put_contents('/var/www/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
-                        $pro_images[] = $image;
-                        $count++;
-                    }
-
-                    if(!empty($request->input('from') && $request->input('to'))){
-                        $from_date = date('Y-m-d', strtotime($request->input('from')));
-                        $to_date = date('Y-m-d', strtotime($request->input('to')));
+                        //Redirect
+                        return redirect()->back()->withInput($request->all());
                     }else{
-                        $from_date = NULL;
-                        $to_date = NULL;
-                    } 
+                        $count = 0;
+                        foreach($request->input('url')[$request->input('variation_id')] as $url){
+                            //Upload Product Image
+                            $image = uniqid().'.jpeg';
+                                $image_path = file_put_contents('/var/www/admin.shopker.pk/public/assets/admin/images/ecommerce/products/'.$image, file_get_contents($url));
+                            $pro_images[] = $image;
+                            $count++;
+                        }
 
-                    //Set Field data according to table columns
-                    $data = array(
-                        'ip_address' => $request->ip(),
-                        'user_id' => $request->session()->get('user_details')['id'],
-                        'name' => $request->input('name'),
-                        'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->input('name').'-'.$vendor_details->store_name))),
-                        'high_light' => $request->input('high_light'),
-                        'description' => $request->input('description'),
-                        'warranty_type' => $request->input('warranty_type'),
-                        'what_in_the_box' => $request->input('what_in_the_box'),
-                        'weight' => $request->input('weight'),
-                        'length' => $request->input('length'),
-                        'width' => $request->input('width'),
-                        'height' => $request->input('height'),
-                        'variation_id' => $request->input('variation_id'),
-                        'sku_code' => $request->input('sku'),
-                        'regural_price' => $request->input('price'),
-                        'sale_price' => $request->input('sale_price'),
-                        'quantity' => $request->input('quantity'),
-                        'from_date' => $from_date,
-                        'to_date' => $to_date,
-                        'status' => $request->input('status'),
-                        'video_url' => $request->input('video_url'),
-                        'is_approved' => 1,
-                        'meta_keywords' => $request->input('meta_keywords'),
-                        'meta_description' => $request->input('meta_description'),
-                        'created_date' => date('Y-m-d'),
-                        'created_time' => date('h:i:s'),
-                    );
+                        if(!empty($request->input('from') && $request->input('to'))){
+                            $from_date = date('Y-m-d', strtotime($request->input('from')));
+                            $to_date = date('Y-m-d', strtotime($request->input('to')));
+                        }else{
+                            $from_date = NULL;
+                            $to_date = NULL;
+                        } 
 
-                    //Query For Updating Data
-                    $product_id = DB::table('tbl_products')
-                                 ->insertGetId($data);
-
-                    foreach($pro_images as $image){
                         //Set Field data according to table columns
                         $data = array(
                             'ip_address' => $request->ip(),
                             'user_id' => $request->session()->get('user_details')['id'],
+                            'name' => $request->input('name'),
+                            'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($request->input('name').'-'.$vendor_details->store_name))),
+                            'high_light' => $request->input('high_light'),
+                            'description' => $request->input('description'),
+                            'warranty_type' => $request->input('warranty_type'),
+                            'what_in_the_box' => $request->input('what_in_the_box'),
+                            'weight' => $request->input('weight'),
+                            'length' => $request->input('length'),
+                            'width' => $request->input('width'),
+                            'height' => $request->input('height'),
+                            'variation_id' => $request->input('variation_id'),
+                            'sku_code' => $request->input('sku'),
+                            'regural_price' => $request->input('price'),
+                            'sale_price' => $request->input('sale_price'),
+                            'quantity' => $request->input('quantity'),
+                            'from_date' => $from_date,
+                            'to_date' => $to_date,
+                            'status' => $request->input('status'),
+                            'video_url' => $request->input('video_url'),
+                            'is_approved' => 1,
+                            'meta_keywords' => $request->input('meta_keywords'),
+                            'meta_description' => $request->input('meta_description'),
+                            'created_date' => date('Y-m-d'),
+                            'created_time' => date('h:i:s'),
+                        );
+
+                        //Query For Updating Data
+                        $product_id = DB::table('tbl_products')
+                                     ->insertGetId($data);
+
+                        foreach($pro_images as $image){
+                            //Set Field data according to table columns
+                            $data = array(
+                                'ip_address' => $request->ip(),
+                                'user_id' => $request->session()->get('user_details')['id'],
+                                'product_id' => $product_id,
+                                'image' => $image,
+                            ); 
+                            
+                            //Query For Inserting Data
+                            $image_id = DB::table('tbl_products_images')
+                                            ->insertGetId($data);
+                        }
+
+                        //Set Field data according to table columns
+                        $data = array(
+                            'ip_address' => $request->ip(),
+                            'user_id' => $request->session()->get('user_details')['id'],
+                            'featured_image' => $pro_images[0],
                             'product_id' => $product_id,
-                            'image' => $image,
-                        ); 
-                        
+                        );
+
                         //Query For Inserting Data
-                        $image_id = DB::table('tbl_products_images')
+                        $brand_id = DB::table('tbl_products_featured_images')
                                         ->insertGetId($data);
+
+                        //Set Field data according to table columns
+                        $data = array(
+                            'user_id' => $request->session()->get('user_details')['id'],
+                            'product_id' => $product_id,
+                            'ip_address' => $request->ip(),
+                            'brand_id' => $request->input('brand'),
+                        );
+
+                        //Query For Updating Data
+                        $brand_id = DB::table('tbl_product_brands')
+                                        ->insertGetId($data);
+
+                        //Set Field data according to table columns
+                        $data = array(
+                            'ip_address' => $request->ip(),
+                            'user_id' => $request->session()->get('user_details')['id'],
+                            'parent_id' => $request->input('parent_category'),
+                            'child_id' => $request->input('child_category'),
+                            'sub_child_id' => $request->input('sub_child_category'),
+                            'product_id' => $product_id,
+                        );
+
+                        //Query For Updating Data
+                        $category_id = DB::table('tbl_product_categories')
+                                           ->insertGetId($data);
                     }
 
-                    //Set Field data according to table columns
-                    $data = array(
-                        'ip_address' => $request->ip(),
-                        'user_id' => $request->session()->get('user_details')['id'],
-                        'featured_image' => $pro_images[0],
-                        'product_id' => $product_id,
-                    );
-
-                    //Query For Inserting Data
-                    $brand_id = DB::table('tbl_products_featured_images')
-                                    ->insertGetId($data);
-
-                    //Set Field data according to table columns
-                    $data = array(
-                        'user_id' => $request->session()->get('user_details')['id'],
-                        'product_id' => $product_id,
-                        'ip_address' => $request->ip(),
-                        'brand_id' => $request->input('brand'),
-                    );
-
-                    //Query For Updating Data
-                    $brand_id = DB::table('tbl_product_brands')
-                                    ->insertGetId($data);
-
-                    //Set Field data according to table columns
-                    $data = array(
-                        'ip_address' => $request->ip(),
-                        'user_id' => $request->session()->get('user_details')['id'],
-                        'parent_id' => $request->input('parent_category'),
-                        'child_id' => $request->input('child_category'),
-                        'sub_child_id' => $request->input('sub_child_category'),
-                        'product_id' => $product_id,
-                    );
-
-                    //Query For Updating Data
-                    $category_id = DB::table('tbl_product_categories')
-                                       ->insertGetId($data);
-                }
-
-                if(!empty($category_id)){
-                    //Flash Erro Msg
-                    $request->session()->flash('alert-success', 'Product has been added successfully');
+                    if(!empty($category_id)){
+                        //Flash Erro Msg
+                        $request->session()->flash('alert-success', 'Product has been added successfully');
+                    }else{
+                        //Flash Erro Msg
+                        $request->session()->flash('alert-danger', 'Something went wrong !!');
+                    }
                 }else{
                     //Flash Erro Msg
-                    $request->session()->flash('alert-danger', 'Something went wrong !!');
+                    $request->session()->flash('alert-danger', 'Variation is required for adding products.');
                 }
             }else{
                 //Flash Erro Msg
