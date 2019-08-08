@@ -324,7 +324,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'url.*' => 'required',
             ]);
 
-            if(!empty($request->input('status') && $request->input('variation') && $request->input('product_images') && $request->input('sku') && $request->input('quantity') && $request->input('price') && $request->input('sale_price') && $request->input('from') && $request->input('to'))){
+            if(!empty($request->input('status') && $request->input('variation') && $request->input('product_images') && $request->input('sku') && $request->input('quantity') && $request->input('price'))){
                 if(!empty($request->input('variation'))){
                     //Query For Getting Vendor Id
                     $query = DB::table('tbl_store_settings')
@@ -473,7 +473,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 }
             }else{
                 //Flash Erro Msg
-                $request->session()->flash('alert-danger', 'Variation is required for adding products.');
+                $request->session()->flash('alert-danger', 'Variation inputs is required.');
             }
             
             //Redirect
@@ -727,7 +727,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'url.*' => 'required',
             ]);
             
-            if(!empty($request->input('status') && $request->input('variation') && $request->input('product_images') && $request->input('sku') && $request->input('quantity') && $request->input('price') && $request->input('sale_price') && $request->input('from') && $request->input('to'))){
+            if(!empty($request->input('status') && $request->input('variation') && $request->input('product_images') && $request->input('sku') && $request->input('quantity') && $request->input('price'))){
                 if(!empty($request->input('variation'))){
                 if(!empty($request->input('variation_id'))){
                     //Query For Getting Vendor Id
@@ -875,7 +875,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 }
             }else{
                 //Flash Erro Msg
-                $request->session()->flash('alert-danger', 'Variation is required for adding products.');
+                $request->session()->flash('alert-danger', 'Variation inputs is required.');
             }
 
             //Redirect
@@ -1002,7 +1002,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 'url.*' => 'required',
             ]);
 
-            if(!empty($request->input('status') && $request->input('variation') && $request->input('product_images') && $request->input('sku') && $request->input('quantity') && $request->input('price') && $request->input('sale_price') && $request->input('from') && $request->input('to'))){
+            if(!empty($request->input('status') && $request->input('variation') && $request->input('product_images') && $request->input('sku') && $request->input('quantity') && $request->input('price'))){
                 if(!empty($request->input('variation_id'))){
                     //Query For Getting Vendor Id
                     $query = DB::table('tbl_store_settings')
@@ -1134,7 +1134,7 @@ $html .=    '<div class="row main" data-id="'.$id.'">
                 }
             }else{
                 //Flash Erro Msg
-                $request->session()->flash('alert-danger', 'Variation is required for adding products.');
+                $request->session()->flash('alert-danger', 'Variation inputs is required.');
             }
             
             //Redirect
