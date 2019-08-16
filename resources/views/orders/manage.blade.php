@@ -142,8 +142,6 @@
                                                     <select id="order_status" name="order_status" class="form-control select_2" style="width: 100%">
                                                         <option value="1" @if($row->o_status == 1) selected @endif>In Process</option>
                                                         <option value="2" @if($row->o_status == 2) selected @endif>Ready to Ship</option>
-                                                        <option value="3" @if($row->o_status == 3) selected @endif>Shiped</option>
-                                                        <option value="4" @if($row->o_status == 4) selected @endif>Delivered</option>
                                                         <option value="5" @if($row->o_status == 5) selected @endif>Canceled</option>
                                                     </select>
                                                 </div>
