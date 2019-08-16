@@ -13,66 +13,74 @@
         <section class="content">
             @include('layouts.messages')
             <div class="row">
-                <div class="col-lg-3 col-xs-6">
-                    <div class="small-box bg-aqua">
-                        <div class="inner">
-                            @if(!empty($total_products->total_products)) 
-                            <h3>{{ $total_products->total_products }}</h3>
-                            @else
-                            <h3>0</h3>
-                            @endif
-                            <p>Products</p>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-bag"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-xs-6">
-                    <div class="small-box bg-green">
-                        <div class="inner">
-                            @if(!empty($total_users->total_users)) 
-                            <h3>{{ $total_users->total_users }}</h3>
-                            @else
-                            <h3>0</h3>
-                            @endif
-                            <p>Customers</p>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-stats-bars"></i>
+                <a href="{{ route('manage_products') }}">
+                    <div class="col-lg-3 col-xs-6">
+                        <div class="small-box bg-aqua">
+                            <div class="inner">
+                                @if(!empty($total_products->total_products)) 
+                                <h3>{{ $total_products->total_products }}</h3>
+                                @else
+                                <h3>0</h3>
+                                @endif
+                                <p>Products</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-bag"></i>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-xs-6">
-                    <div class="small-box bg-red">
-                        <div class="inner">
-                            @if(!empty($total_new_orders->new_orders)) 
-                            <h3>{{ $total_new_orders->new_orders }}</h3>
-                            @else
-                            <h3>0</h3>
-                            @endif
-                            <p>New Orders</p>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-pie-graph"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-xs-6">
-                    <div class="small-box bg-yellow">
-                        <div class="inner">
-                            @if(!empty($total_earning->total_earning)) 
-                            <h3>{{ $total_earning->total_earning }}</h3>
-                            @else
-                            <h3>0</h3>
-                            @endif
-                            <p>Total Earning</p>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-stats-bars"></i>
+                </a>
+                <a href="{{ route('manage_orders') }}">
+                    <div class="col-lg-3 col-xs-6">
+                        <div class="small-box bg-green">
+                            <div class="inner">
+                                @if(!empty($total_users->total_users)) 
+                                <h3>{{ $total_users->total_users }}</h3>
+                                @else
+                                <h3>0</h3>
+                                @endif
+                                <p>Customers</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-stats-bars"></i>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
+                <a href="{{ route('manage_orders') }}">
+                    <div class="col-lg-3 col-xs-6">
+                        <div class="small-box bg-red">
+                            <div class="inner">
+                                @if(!empty($total_new_orders->new_orders)) 
+                                <h3>{{ $total_new_orders->new_orders }}</h3>
+                                @else
+                                <h3>0</h3>
+                                @endif
+                                <p>New Orders</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-pie-graph"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="{{ route('manage_account_statement') }}">
+                    <div class="col-lg-3 col-xs-6">
+                        <div class="small-box bg-yellow">
+                            <div class="inner">
+                                @if(!empty($total_earning->total_earning)) 
+                                <h3>{{ $total_earning->total_earning }}</h3>
+                                @else
+                                <h3>0</h3>
+                                @endif
+                                <p>Total Earning</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-stats-bars"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
             <div class="row">
                 <div class="col-md-12">
