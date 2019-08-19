@@ -99,13 +99,20 @@ class AccountsController extends Controller{
                          ->orderBy('tbl_orders.id', 'DESC');
             $result['query'] = $query->get();
 
-            if(count($result['query'])){
+            if(count($results) > 0){
                 $total_commission = 0;
                 $total_earning = 0;
                 $sub_total = 0;
-                foreach($result['query'] as $row){
+                foreach($results as $row){
                     $total_earning += +$row->product_amount;
-                    $total_commission += +round(($row->commission_percent / 100) * $row->product_amount);
+
+                    if(explode('%', $row->commission_percent)[0] != ''){
+                        $commission_percent = explode('%', $row->commission_percent)[0];
+                    }else{
+                        $commission_percent = $row->commission_percent;
+                    }
+
+                    $total_commission += +round(($commission_percent / 100) * $row->product_amount);
                     
                 }
                 
@@ -113,6 +120,13 @@ class AccountsController extends Controller{
                     'total_commission' => $total_commission,
                     'total_earning' => $total_earning,
                     'sub_total' => $total_earning - $total_commission,
+                );
+
+            }else{
+                $result['query'] = array(
+                    'total_commission' => 0,
+                    'total_earning' => 0,
+                    'sub_total' => 0,
                 );
             }
 
