@@ -97,7 +97,7 @@ class AccountsController extends Controller{
                          }
                    $query->where('tbl_orders.seller_id', $request->session()->get('user_details')['id'])
                          ->orderBy('tbl_orders.id', 'DESC');
-            $result['query'] = $query->get();
+            $results = $query->get();
 
             if(count($results) > 0){
                 $total_commission = 0;
