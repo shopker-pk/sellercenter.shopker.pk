@@ -58,8 +58,8 @@
                                     <td>{{ date('D-M-Y', strtotime($row->order_date)) }}</td>
                                     <td>{{ $row->sku_code }}</td>
                                     <td>{{ $row->product_amount }}</td>
-                                    <td>{{ round(($row->commission_percent / 100) * $row->product_amount) }}</td>
-                                    <td>{{ round(($row->product_amount) - ($row->commission_percent / 100) * $row->product_amount) }}</td>
+                                    <td>@if(explode('%', $row->commission_percent)[0] != '') {{ floor((explode('%', $row->commission_percent)[0] / 100) * $row->product_amount) }} @else {{ floor(($row->commission_percent / 100) * $row->product_amount) }} @endif</td>
+                                    <td>@if(explode('%', $row->commission_percent)[0] != '') {{ floor(($row->product_amount) - (explode('%', $row->commission_percent)[0] / 100) * $row->product_amount) }} @else {{ floor(($row->product_amount) - ($row->commission_percent / 100) * $row->product_amount) }} @endif</td>
                                     <td>
                                         @if($row->operational_status == 0)
                                             <span class="label label-warning">Pending</span>
