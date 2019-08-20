@@ -107,4 +107,96 @@ class AuthController extends Controller{
 			print_r("<center><h4>Error 404 !!<br> You don't have accees of this page<br> Please move back<h4></center>");
 		}
 	}
+
+    function forget_password(Request $request){
+        if(!empty($request->session()->has('id') && $request->session()->get('role') == 2)){
+            //Redirect to dashboard
+            return redirect()->back();
+        }else{
+            //Header Data
+            $result = array(
+                'page_title' => 'Forget Password',
+                'meta_keywords' => '',
+                'meta_description' => '',
+            );
+
+            //Query For Getting Logo and Store Name
+            $query = DB::table('tbl_site_settings')
+                         ->select('tbl_site_settings.title', 'tbl_site_images.header_image')
+                         ->leftJoin('tbl_site_images', 'tbl_site_images.admin_id', '=', 'tbl_site_settings.admin_id');
+            $result['query'] = $query->first();
+
+            //call page
+            return view('auth.forget_password', $result); 
+        }
+    }
+
+    function sent_password(Request $request){
+        if(empty($request->session()->has('id') && $request->session()->get('role') == 2)){
+            //Inputs Validation
+            $input_validations = $request->validate([
+                'email' => 'required|email',
+            ]);
+
+            //Query For Checking if email is exist or not
+            $query = DB::table('tbl_users')
+                         ->select('id', 'first_name', 'last_name')   
+                         ->where('email', 'like', '%'.$request->input('email').'%')
+                         ->where('role', 2);
+            $user_details = $query->first();
+
+            if(!empty($user_details->id)){
+                $new_password =  'S'.rand(111111, 999999).'r';
+
+                //Set data accordings to table columns
+                $data = array(
+                    'ip_address' => $request->ip(),
+                    'password' => sha1($new_password),
+                );
+
+                //Insert data in table
+                $query = DB::table('tbl_users')
+                             ->where('email', 'like', '%'.$request->input('email').'%')
+                             ->where('role', 2)
+                             ->update($data);
+
+                if($query == 1){
+                    //Query For Getting Logo
+                    $query = DB::table('tbl_site_images')
+                                 ->select('header_image');
+                    $result = $query->first();
+
+                    $data = array(
+                        'content' => 'Your new password is '.$new_password.' Dear',
+                        'website_url' => env('FRONTEND_URL'),
+                        'logo' => env('ADMIN_URL').'public/assets/admin/images/settings/logo/'.$result->header_image,
+                        'name' => $user_details->first_name.' '.$user_details->last_name,
+                        'email' => $request->input('email'),
+                        'type' => 'forget_password',
+                    );
+
+                    \Mail::send(['html' => 'email_templates.template'], $data, function($message) use ($data){
+                        $message->to($data['email'], $data['name'])
+                                ->subject('Forget Password.')
+                                ->from('admin@shopker.pk', 'Shopker');
+                    });
+
+                    //Flash Erro Msg
+                    $request->session()->flash('alert-success', 'We have sent you a new password at your given email.');
+                }else{
+                    //Flash Erro Msg
+                    $request->session()->flash('alert-danger', "Something went wrong !!");
+                }
+            }else{
+                //Flash Erro Msg
+                $request->session()->flash('alert-danger', "We have not found any record.");
+            }
+
+            //Redirect
+            return redirect()->route('forget_password');
+        }else{
+            //Redirect to sign up page
+            return redirect()->back();  
+        }
+    }
 }

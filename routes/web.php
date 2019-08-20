@@ -4,6 +4,8 @@
 			Route::get('/', 'Auth\AuthController@sign_in')->name('vendor_sign_in');
 			Route::post('/vendor/validating-credentials', 'Auth\AuthController@validating_credentials')->name('vendor_validating_credentials');
 			Route::get('/vendor/sign-out', 'Auth\AuthController@sign_out')->name('vendor_sign_out');
+			Route::get('/forget-password', 'Auth\AuthController@forget_password')->name('forget_password');
+			Route::post('/sent-password', 'Auth\AuthController@sent_password')->name('sent_password');
 		//Auth Routes End
 
 		//Dashboard Routes Start

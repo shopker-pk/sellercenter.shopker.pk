@@ -18,11 +18,11 @@
 	        	<div class="col-md-5">
 	    			<section class="content">
 	    				@include('layouts.messages')
-			            <form action="{{ route('vendor_validating_credentials') }}" method="post">
+			            <form action="{{ route('sent_password') }}" method="post">
 			            	{{ csrf_field() }}
 			                <div class="box box-default">
 			                    <div class="box-body">
-			                    	<h2><center>Sign In</center></h2>
+			                    	<h2><center>Forget Password</center></h2>
 			                        <div class="row">
 			                            <div class="col-md-12">
 			                                <div class="form-group">
@@ -31,29 +31,11 @@
 			                                </div>
 			                            </div>
 			                        </div>
-			                        <div class="row">
-			                            <div class="col-md-12">
-			                                <div class="form-group">
-			                                    <label>Password</label><label class="label-control" style="color:red">*</label>
-			                                    <input type="password" name="password" id="password" class="form-control" placeholder="Password*">
-			                                </div>
-			                            </div>
-			                        </div>
 			                    </div>
 			                    <div class="box-footer">
 			                        <div class="row">
-			                            <div class="col-md-5">
-			                            	<a href="{{ route('forget_password') }}" class="btn btn-primary">Forget Password?</a>
-			                            </div>
-			                            <div class="col-md-4"></div>
-			                            <div class="col-md-3">
-			                                <button type="submit" class="btn btn-primary">&nbsp;&nbsp; Sign In &nbsp;</button>
-			                            </div>
-			                        </div>
-			                        <div class="row">
 			                            <div class="col-md-12">
-			                            	<br><br><br>
-			                            	Don’t have an account yet? <a href="{{ env('FRONTEND_URL').'sell-with-us' }}"> Become A Seller</a>
+			                            	<button type="submit" class="btn btn-primary">Forget Password</button>
 			                            </div>
 			                        </div>
 			                    </div>
