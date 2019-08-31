@@ -56,7 +56,7 @@
         									</div>
         									<div class="col-md-6"></div>
         									<div class="col-md-3" id="contenright">
-        										<span class="price1">{{ $query['total_earning'] }} PKR</span><br/>
+        										<span class="price1">@if(!empty($row['total_earning'])) {{ $query['total_earning'] }} @else 00.00 @endif PKR</span><br/>
 		        							</div>
         								</div>
         								<div class="row">
@@ -68,7 +68,7 @@
         									<div class="col-md-6"></div>
         									<div class="col-md-3" id="contenright">
         										<div class="paymentitems">
-        									 		<span class="price1">- {{ $query['total_commission'] }} PKR</span><br/>
+        									 		<span class="price1">- @if(!empty($query['total_commission'])) {{ $query['total_commission'] }} @else 00.00 @endif PKR</span><br/>
 		        								</div>
         									</div>
         								</div>
@@ -79,7 +79,7 @@
         									</div>
         									<div class="col-md-2"></div>
         									<div class="col-md-7" id="contenright">
-        										<span class="price1">{{ $query['sub_total'] }} PKR</span>	
+        										<span class="price1">@if(!empty($query['sub_total'])) {{ $query['sub_total'] }} @else 00.00 @endif PKR</span>	
         									</div>
         								</div>
         							</div>
@@ -95,7 +95,7 @@
         							</div>
         							<div class="col-md-2"></div>
         							<div class="col-md-4" id="contenright">
-        								<span class="price1">{{ $query['sub_total'] }} PKR</span>
+        								<span class="price1">@if(!empty($query['sub_total'])) {{ $query['sub_total'] }} @else 00.00 @endif PKR</span>
         							</div>
         						</div>
         					</div>
